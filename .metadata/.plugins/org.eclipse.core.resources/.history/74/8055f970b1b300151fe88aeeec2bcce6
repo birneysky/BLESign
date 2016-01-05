@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.slidingmenu"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="17"
+        android:targetSdkVersion="20" />
+    <!-- ibeacon -->
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+	<uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <!-- baidu -->
+    <permission android:name="android.permission.BAIDU_LOCATION_SERVICE" >
+    </permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_GPS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
+    <!-- ShareSDK -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+ 	<uses-permission android:name="android.permission.INTERNET" />
+ 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+ 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+ 	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+ 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+ 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+ 	<uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+ 	<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+ <!-- 蓝牙分享所需的权限 -->
+  <uses-permission android:name="android.permission.BLUETOOTH" />
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- 发布众寻 -->
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+	
+    <application
+        android:name="com.example.slidingmenu.IbeaconApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        
+        android:theme="@style/ThemeActivity" >
+        
+
+        <!-- baidu key -->
+<!-- release key  android:value="C24XG5plLInMGCxjWn5s7zYT" android:theme="@android:style/Theme.NoTitleBar" -->
+<!-- debug key android:value="DXkr9L7h5hmIKhGcTX7FP5BS" -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="DXkr9L7h5hmIKhGcTX7FP5BS"/>
+
+        <activity
+            android:name="com.example.slidingmenu.WelcomeActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="portrait" 
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- ShareSDK -->
+		<activity
+			 android:name="com.mob.tools.MobUIShell"
+			 android:theme="@android:style/Theme.Translucent.NoTitleBar"
+			 android:configChanges="keyboardHidden|orientation|screenSize"
+			 android:screenOrientation="portrait"
+			 android:windowSoftInputMode="stateHidden|adjustResize" >
+			 <intent-filter>
+				 <data android:scheme="tencent100371282" />
+				 <action android:name="android.intent.action.VIEW" />
+				 <category android:name="android.intent.category.BROWSABLE" />
+				 <category android:name="android.intent.category.DEFAULT" />
+			 </intent-filter>
+		 </activity>
+	 	<!-- ShareSDK 微信分享回调 -->
+         <activity
+			 android:name="com.example.slidingmenu.wxapi.WXEntryActivity"
+			 android:theme="@android:style/Theme.Translucent.NoTitleBar"
+			 android:configChanges="keyboardHidden|orientation|screenSize"
+			 android:exported="true"
+			 android:screenOrientation="portrait" /> 
+
+        <activity
+            android:name="com.example.slidingmenu.AddBeaconActivity"
+            android:theme="@style/MyTitleBarStyle" 
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop">
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.AddNewTrackerActivity"
+            android:label="@string/title_activity_add_new_tracker"
+            android:theme="@style/MyTitleBarStyle"
+            android:launchMode="singleTop" 
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.SleepModeActivity"
+            android:label="@string/title_activity_sleep_mode"
+            android:theme="@style/SampleTheme.Light" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.GuideActivity"
+            android:label="@string/title_activity_welcome" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.MainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.RegistActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.BeforeTrackingActivity"
+            android:label="@string/title_activity_before_tracking"
+            android:theme="@style/MyTitleBarStyle" 
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.EditUserInfoActivity"
+            android:label="@string/title_activity_edit_user_info"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.BaseActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.LoginActivity"
+            android:label="@string/title_activity_login" 
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop" >
+        </activity>
+
+        <!-- baidu -->
+        <activity android:name="com.example.slidingmenu.BaiduMapActivity" >
+        </activity>
+
+        <!-- ibeaconService -->
+        <service
+            android:name="com.zijin.ibeacon.service.BluetoothLeService"
+            android:enabled="true" />
+        <!-- baidu location -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" >
+        </service>
+
+        <activity
+            android:name="com.example.slidingmenu.QuestionActivity"
+            android:label="@string/title_activity_question"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.SuggestActivity"
+            android:label="@string/title_activity_suggest"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.AboutusActivity"
+            android:label="@string/title_activity_about"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.ForgetPasswordActivity"
+            android:label="@string/title_activity_forget_password"
+            android:theme="@style/MyTitleBarStyle" 
+            android:launchMode="singleTop">
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.ResetPasswordActivity"
+            android:label="@string/title_activity_reset_password"
+            android:theme="@style/MyTitleBarStyle" 
+            android:launchMode="singleTop">
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.EditUserNameActivity"
+            android:label="@string/title_activity_edit_user_name"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+
+        <!-- 发布众寻 -->
+        <activity
+            android:name="com.example.published.ImageGridActivity"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.example.published.TestPicActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.example.published.PhotoActivity"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.GetAddressInfoActivity"
+            android:theme="@style/MyTitleBarStyle" 
+             >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.ConnectionStateActivity"
+            android:label="@string/title_activity_connection_success"
+            android:theme="@style/MyTitleBarStyle" 
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
+        </activity>
+        <activity
+            android:name="com.example.published.PublishedActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_edit_user_info"
+            android:theme="@style/MyTitleBarStyle" 
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name="com.view.sortlistview.SelectCountryActivity" 
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/MyTitleBarStyle"
+            android:launchMode="singleTop">
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.RepeatModeActivity"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.LocationNoteActivity"
+            android:label="@string/title_activity_location_note"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.SafityAreaActivity"
+            android:label="@string/title_activity_safity_area"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <activity
+            android:name="com.example.fragment.SearchedMessageActivity"
+            android:label="@string/title_activity_searched_message"
+            android:theme="@style/MyTitleBarStyle" 
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
+        </activity>
+       <activity
+            android:name="com.example.slidingmenu.SearchedHelpItemActivity"
+            android:label="@string/str_searched_message_help"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.SearchedMineItemActivity"
+            android:label="@string/str_searched_message_my" 
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.SearchedMineWordsActivity"
+            android:label="@string/str_searched_message_my" >
+        </activity>
+        <activity
+            android:name="com.example.slidingmenu.PrivateDealActivity"
+            android:label="@string/title_activity_private_deal"
+            android:theme="@style/MyTitleBarStyle" >
+        </activity>
+        <receiver android:name="com.example.receiver.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <activity 
+            android:launchMode="singleTop"
+            android:name="com.zjjin.utils.baidumap.GeometryActivity"></activity>
+        <activity
+            android:launchMode="singleTop"
+            android:name="com.zjjin.utils.baidumap.OpenglActivity"
+            android:theme="@style/MyTitleBarStyle" ></activity>
+        
+       
+        
+    </application>
+
+</manifest>
