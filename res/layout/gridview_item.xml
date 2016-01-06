@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_gridview_item"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:paddingTop="2dp"
+    >
+
+    <com.view.circleimageview.CircleImageView
+        android:id="@+id/circleImageView_tracker_photo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/app_logo"
+        app:border_color="#ff808080"
+        app:border_width="1dp" />
+
+    <TextView
+        android:id="@+id/tv_state_tracker_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="众寻中"
+        android:textColor="#FF222222"
+        android:textSize="22sp" />
+
+    <ImageView
+        android:id="@+id/iv_no_tracker_item"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerInParent="true"
+        android:contentDescription="@null"
+        android:scaleType="center"
+        android:src="@drawable/no_tracker_item_bg"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/layout_state_tracker_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.view.circleimageview.CircleImageView
+            android:id="@+id/circleImageView_tracker_state_bg"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/unselected_item_bg"
+            app:border_color="#FFCDCDCD"
+            app:border_width="2dp" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_name_tracker_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/circleImageView_tracker_photo"
+        android:gravity="center_horizontal"
+        android:paddingTop="8dp"
+        android:layout_marginTop="16dp"
+        android:singleLine="true"
+        android:text="设备名称"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <FrameLayout
+        android:id="@+id/layout_tracker_item_selected"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/tv_name_tracker_item"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:id="@+id/iv_tracker_item_selected"
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:contentDescription="@null"
+            android:src="@drawable/selected_tag"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</RelativeLayout>

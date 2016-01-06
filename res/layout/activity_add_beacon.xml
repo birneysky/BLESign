@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_item" >
+    
+    <ImageView 
+        android:id="@+id/iv_center_notice"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:src="@drawable/add_beacon_center_notice"
+        android:contentDescription="@null"
+        android:layout_gravity="center"
+        android:layout_marginTop="-60dp"
+        />
+    <TextView 
+        android:id="@+id/tv_add_beacon_center_notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_beacon_center_notice_text"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="-60dp"
+        android:textSize="20sp"
+        android:textColor="@color/white"/>
+    <ImageView 
+        android:id="@+id/iv_circle_guid"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_gravity="center"
+        android:contentDescription="@null"
+        android:src="@drawable/add_beacon_circle_guide"
+        android:layout_marginTop="-60dp"/>
+    
+    <ImageView 
+        android:id="@+id/iv_add_beacon_small_point"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:contentDescription="@null"
+        android:layout_gravity="center"
+        android:src="@drawable/add_beacon_small_point"
+        android:layout_marginTop="30dp"/>
+    
+    <TextView 
+        android:id="@+id/tv_show_notice_below"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_beacon_notice_text"
+        android:textSize="@dimen/add_beacon_notice_text_size"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="70dp"
+        android:textColor="@color/gray"/>
+    
+</FrameLayout>
