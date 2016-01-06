@@ -1,4 +1,4 @@
-package com.example.blesign;
+package com.github.blesign;
 
 import android.app.Activity;
 import android.os.Bundle;
