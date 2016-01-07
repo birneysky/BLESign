@@ -4,4 +4,9 @@
     <string name="app_name">BleSign</string>
     <string name="hello_world">lv lanlan is a zhu!</string>
 
+    <!-- AddBeaconActivity -->
+    <string name="ble_not_supported">该设备不支持BLE或蓝牙未启用</string>
+    <string name="add_beacon_notice_text">将贴片放在手机屏幕上\n进行自动配对</string>
+    <string name="add_beacon_center_notice_text_help">搜寻中</string>
+    <string name="add_beacon_center_notice_text">将贴片\n放在这里</string>
 </resources>
