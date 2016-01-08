@@ -60,7 +60,6 @@ public class Utils {
 	private static final String TAG=Utils.class.getSimpleName();
 	private static final String LOCATIONFILE="ibeaconlocation.txt";
 	private static final String BLE_PASS="987123";
-	public static final ArrayList<String> scenes= new ArrayList<String>();
 	public static ArrayList<String> ibeaconArr= new ArrayList<String>();
 	
 	public static boolean isScanAddOrHelp=false;//针对扫描场景+添加设备。帮助众寻：true？

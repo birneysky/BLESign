@@ -5,22 +5,16 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Tracker implements Serializable{
 	private int id;
-	private String name;
-	private String uuid;
-//	private String mode;
-	private String sleepTimes;
-	private String repeatTimes;
-	private String major;
-	private String minor;
+	private String name;//名字
+	private String device_addr;//蓝牙地址
+	private String uuid;//服务特性
+//	private String major;
+//	private String minor;
 	private int state;
-	private String trackerIconPath;
-	private String device_addr;
+	private String trackerIconPath;//图片
 	private String device_mode;
-	private String sleepTimesMode;
-	private String repeatTimesMode;
-	private int distance;
-	private int enabled;
-	
+	private int distance;//距离1-10米
+	private int enabled;//开启，关闭
 
 	public int getId() {
 		return id;
@@ -73,8 +67,6 @@ public class Tracker implements Serializable{
 		this.device_mode = device_mode;
 	}
 	
-	
-
 	public String getUuid() {
 		return uuid;
 	}
@@ -82,32 +74,8 @@ public class Tracker implements Serializable{
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
-//
-//	public String getMode() {
-//		return mode;
-//	}
-//
-//	public void setMode(String mode) {
-//		this.mode = mode;
-//	}
 
-	public String getSleepTimes() {
-		return sleepTimes;
-	}
-
-	public void setSleepTimes(String sleepTimes) {
-		this.sleepTimes = sleepTimes;
-	}
-
-	public String getRepeatTimes() {
-		return repeatTimes;
-	}
-
-	public void setRepeatTimes(String repeatTimes) {
-		this.repeatTimes = repeatTimes;
-	}
-
-	public String getMajor() {
+	/*public String getMajor() {
 		return major;
 	}
 
@@ -121,23 +89,7 @@ public class Tracker implements Serializable{
 
 	public void setMinor(String minor) {
 		this.minor = minor;
-	}
-	
-	public String getSleepTimesMode() {
-		return sleepTimesMode;
-	}
-
-	public void setSleepTimesMode(String sleepTimesMode) {
-		this.sleepTimesMode = sleepTimesMode;
-	}
-
-	public String getRepeatTimesMode() {
-		return repeatTimesMode;
-	}
-
-	public void setRepeatTimesMode(String repeatTimesMode) {
-		this.repeatTimesMode = repeatTimesMode;
-	}
+	}*/
 	
 	public int getDistance() {
 		return distance;
@@ -159,7 +111,6 @@ public class Tracker implements Serializable{
 	@Override
 	public String toString() {
 		return "Tracker: id = " + id + ", name = " + name + ", device_addr = "+ device_addr + 
-				", state = " + state + ", trackerIconPath = " + trackerIconPath + ", distance = " + distance + 
-				", device_mode = " + device_mode;
+				", state = " + state + ", trackerIconPath = " + trackerIconPath + ", distance = " + distance;
 	}
 }

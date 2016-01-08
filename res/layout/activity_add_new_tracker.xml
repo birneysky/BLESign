@@ -7,7 +7,7 @@
     android:background="#E4E2DF"
     android:orientation="vertical"
     android:id="@+id/add_new_tracker_layout"
-    android:layout_marginBottom="10dp">
+    >
 
 	<FrameLayout
 	    android:id="@+id/laout_add_ibeacon_image"

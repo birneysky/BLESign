@@ -1,6 +1,9 @@
 package com.github.blesign;
 
+import java.util.ArrayList;
+
 import com.github.blesign.adapter.GridViewAdapter;
+import com.github.blesign.model.Tracker;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,7 +17,8 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends Activity {
 	//UI
 	private GridView gridViewTrackers;
-	private GridViewAdapter gvAdapter;
+	private GridViewAdapter adapter;
+	private ArrayList<Tracker> lists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,9 @@ public class MainActivity extends Activity {
 	private void setupView() {
 		// TODO Auto-generated method stub
 		gridViewTrackers = (GridView)findViewById(R.id.gridView_trackers);
+		lists = new ArrayList<Tracker>();
+		adapter = new GridViewAdapter(getApplicationContext(), lists);
+		gridViewTrackers.setAdapter(adapter);
 	}
 
 	private void addListener() {
@@ -34,7 +41,7 @@ public class MainActivity extends Activity {
 		gridViewTrackers.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View arg1, int position, long arg3) {
-				if(position == (gvAdapter.getCount()-1)){//单击添加按钮
+				if(position == (adapter.getCount()-1)){//单击添加按钮
 					Intent intent = new Intent(MainActivity.this,AddBeaconActivity.class);
 					startActivityForResult(intent,AddBeaconActivity.REQUEST_ADD_IBEACON);
 					return;
@@ -48,5 +55,12 @@ public class MainActivity extends Activity {
 				
 			}
 		});
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		
 	}
 }

@@ -1,8 +1,5 @@
 package com.github.blesign;
 
-import com.github.blesign.utils.Consts;
-import com.github.blesign.utils.Utils;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -10,21 +7,22 @@ import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.blesign.utils.Consts;
+import com.github.blesign.utils.LogUtil;
+import com.github.blesign.utils.Utils;
 
 @SuppressLint("NewApi")
 public class AddBeaconActivity extends Activity {
@@ -152,9 +150,8 @@ public class AddBeaconActivity extends Activity {
 	public  BluetoothAdapter.LeScanCallback mLeScanCallback = new LeScanCallback() {
 		@Override
 		public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecords) {
-			if(Utils.scenes.contains(device.getAddress())){ // ?重复扫描Utils.showMsg(getApplicationContext(), "重复扫描，scenes");
-				return;
-			}
+			/*final IBeacon ibeacon = IBeaconClass.fromScanData(device,rssi,scanRecords);
+			LogUtil.i(TAG, ibeacon.toString());*/
 			String device_mac = device.getAddress();
 			if(device_mac.length() == 0){ // 扫描无效Utils.showMsg(getApplicationContext(), "扫描地址无效，device address为空");
 				return;
@@ -163,15 +160,14 @@ public class AddBeaconActivity extends Activity {
 				//添加,重复则退出
 				return;
 			}else{ // 不重复
-				// 添加，不重复则添加
-				//执行下面代码
 				addAddress = device_mac;
 			}
-			Log.i(TAG, "addAddress = " + addAddress+", devicecount = "+devicecount);
 			if(devicecount != 0){ // ?扫描到的非第一个设备Utils.showMsg(getApplicationContext(), "扫描不是第一个设备，device count");
+				LogUtil.i(TAG, device_mac);
 				return;
 			}
 			devicecount += 1;
+			LogUtil.i(TAG, "addAddress = " + addAddress+", devicecount = "+devicecount);
 		}
 	};
 	@Override
@@ -201,8 +197,6 @@ public class AddBeaconActivity extends Activity {
 			if (resultCode == AddBeaconActivity.REQEUSET_ADD_IBEACON_NAME){
 				// 返回新添加的Tracker
 				data.putExtra("tracker_mac", addAddress);
-//				data.putExtra("major", major);
-//				data.putExtra("minor", minor);
 				setResult(AddBeaconActivity.REQUEST_ADD_IBEACON, data);
 				finish();
 			} else if (resultCode == Consts.RESULT_CONNECTION_STATE_SCAN_BEACON_AGAIN){
