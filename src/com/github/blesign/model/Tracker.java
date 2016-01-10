@@ -7,13 +7,13 @@ public class Tracker implements Serializable{
 	private int id;
 	private String name;//名字
 	private String device_addr;//蓝牙地址
+	private String trackerIconPath;//图片
+	private int distance;//距离1-10米
 	private String uuid;//服务特性
 //	private String major;
 //	private String minor;
 	private int state;
-	private String trackerIconPath;//图片
 	private String device_mode;
-	private int distance;//距离1-10米
 	private int enabled;//开启，关闭
 
 	public int getId() {

@@ -60,15 +60,12 @@ public class Utils {
 	private static final String TAG=Utils.class.getSimpleName();
 	private static final String LOCATIONFILE="ibeaconlocation.txt";
 	private static final String BLE_PASS="987123";
+	/**
+	 * 已经添加的Beacon地址集合
+	 */
 	public static ArrayList<String> ibeaconArr= new ArrayList<String>();
 	
-	public static boolean isScanAddOrHelp=false;//针对扫描场景+添加设备。帮助众寻：true？
-	public static final String mServerURl="http://61.51.110.209:8080/ok";
-//	public static final String mServerURl="http://61.51.110.209:8087/iBeacon";
-//	public static final String mServerURl = "http://192.168.1.61:8080/ok";
 
-	public static final String mServerImgPath =mServerURl+"/ARTICLE_IMG/";
-	
 	private static int txPower =-59;//设备距离一米的dBm值
 	
 	public static double calculateDistance(double rssi) {

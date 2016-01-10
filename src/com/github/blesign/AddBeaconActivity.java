@@ -125,14 +125,12 @@ public class AddBeaconActivity extends Activity {
 								// 未发现设备，重新扫描
 								Intent connectionFailed = new Intent(AddBeaconActivity.this, ConnectionStateActivity.class);
 								connectionFailed.putExtra(Consts.CONNECTION_STATE, Consts.EXTRA_ADD_BEACON_FAILED);
-								connectionFailed.putExtra(Consts.EXTRA_KEY_SCAN_TYPE, Consts.EXTRA_SCAN_TYPE_ADD);
 								startActivityForResult(connectionFailed, Consts.REQUEST_ADD_BEACON_CONNECTION_STATE);
 							}else{
 								//添加beacon发现设备，
 								Intent connectionSuccess = new Intent(AddBeaconActivity.this, ConnectionStateActivity.class);
 								connectionSuccess.putExtra(Consts.CONNECTION_STATE, Consts.EXTRA_ADD_BEACON_OK);
 								connectionSuccess.putExtra(Consts.DEVICE_MAC, addAddress);
-								connectionSuccess.putExtra(Consts.EXTRA_KEY_SCAN_TYPE, Consts.EXTRA_SCAN_TYPE_ADD);
 								startActivityForResult(connectionSuccess, Consts.REQUEST_ADD_BEACON_CONNECTION_STATE);
 							}
 							ivRemoteView.clearAnimation();
@@ -194,10 +192,10 @@ public class AddBeaconActivity extends Activity {
         }
 		if(data==null)return;
 		if(requestCode == Consts.REQUEST_ADD_BEACON_CONNECTION_STATE){
-			if (resultCode == AddBeaconActivity.REQEUSET_ADD_IBEACON_NAME){
+			if (resultCode == RESULT_OK){
 				// 返回新添加的Tracker
 				data.putExtra("tracker_mac", addAddress);
-				setResult(AddBeaconActivity.REQUEST_ADD_IBEACON, data);
+				setResult(RESULT_OK, data);
 				finish();
 			} else if (resultCode == Consts.RESULT_CONNECTION_STATE_SCAN_BEACON_AGAIN){
 				// TODO 数据恢复

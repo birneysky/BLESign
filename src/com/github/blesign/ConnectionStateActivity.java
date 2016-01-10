@@ -118,14 +118,14 @@ public class ConnectionStateActivity extends Activity {
 			return;
 		if(requestCode == Consts.REQUEST_CONNECTION_STATE_ADD_TRACKER){
 			// 成功添加
-			if(resultCode == AddBeaconActivity.REQEUSET_ADD_IBEACON_NAME){//add ibeacon return 
+			if(resultCode == RESULT_OK){//add ibeacon return 
 				String devive_name = data.getStringExtra("name");
 				String pic_path = data.getStringExtra("picPath");
 				Intent returnIntent = new Intent();
 				returnIntent.putExtra("tracker_name", devive_name);returnIntent.putExtra(Consts.DEVICE_MAC, device_mac);
 				if(pic_path != null)
 					returnIntent.putExtra("picPath", pic_path);
-				setResult(AddBeaconActivity.REQEUSET_ADD_IBEACON_NAME, returnIntent);
+				setResult(RESULT_OK, returnIntent);
 				finish();
 			}
 		}

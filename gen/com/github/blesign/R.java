@@ -516,6 +516,7 @@ containing a value of this type.
         public static final int unselected_item_bg=0x7f02001a;
         public static final int whatsnew_btn_nor=0x7f02001b;
         public static final int whatsnew_btn_pressed=0x7f02001c;
+        public static final int youjiantou_light=0x7f02001d;
     }
     public static final class id {
         public static final int add_new_tracker_layout=0x7f090005;
@@ -542,19 +543,37 @@ containing a value of this type.
         public static final int iv_connection_state=0x7f09000a;
         public static final int iv_no_tracker_item=0x7f090016;
         public static final int iv_tracker_item_selected=0x7f09001b;
+        public static final int iv_tracker_safity_list=0x7f090036;
         public static final int laout_add_ibeacon_image=0x7f090006;
         public static final int layout_gridview_item=0x7f090013;
+        public static final int layout_seekbar=0x7f090030;
         public static final int layout_state_tracker_item=0x7f090017;
+        public static final int layout_tracker_connect=0x7f090029;
+        public static final int layout_tracker_disconnect=0x7f09002b;
+        public static final int layout_tracker_disconnect_delete=0x7f090025;
+        public static final int layout_tracker_distance=0x7f09002d;
         public static final int layout_tracker_item_selected=0x7f09001a;
+        public static final int layout_tracker_open_camera=0x7f090027;
+        public static final int layout_tracker_safity_area=0x7f090033;
         public static final int ll_popup=0x7f090021;
         public static final int name=0x7f09001e;
+        public static final int pop_seekbar=0x7f090032;
         public static final int tv_add_beacon_center_notice=0x7f090001;
         public static final int tv_add_tracker_name_notice=0x7f090008;
         public static final int tv_connection_notice=0x7f09000d;
         public static final int tv_connection_state=0x7f09000b;
         public static final int tv_name_tracker_item=0x7f090019;
+        public static final int tv_show_distance_seekbar=0x7f090031;
         public static final int tv_show_notice_below=0x7f090004;
         public static final int tv_state_tracker_item=0x7f090015;
+        public static final int tv_tracker_connect=0x7f09002a;
+        public static final int tv_tracker_disconnect=0x7f09002c;
+        public static final int tv_tracker_disconnect_delete=0x7f090026;
+        public static final int tv_tracker_distance=0x7f09002e;
+        public static final int tv_tracker_open_camera=0x7f090028;
+        public static final int tv_tracker_safity_area=0x7f090035;
+        public static final int tv_tracker_safity_area_title=0x7f090034;
+        public static final int tv_tracker_show_distance=0x7f09002f;
     }
     public static final class layout {
         public static final int activity_add_beacon=0x7f030000;
@@ -567,16 +586,23 @@ containing a value of this type.
         public static final int item_image_bucket=0x7f030007;
         public static final int item_image_grid=0x7f030008;
         public static final int item_popupwindows=0x7f030009;
+        public static final int tracker_unlinked=0x7f03000a;
     }
     public static final class string {
         public static final int add_beacon_center_notice_text=0x7f070005;
         public static final int add_beacon_center_notice_text_help=0x7f070004;
         public static final int add_beacon_notice_text=0x7f070003;
+        public static final int alarm_ring_name=0x7f070009;
         public static final int app_name=0x7f070000;
+        /**  MainActivity 
+         */
+        public static final int base_kilometers=0x7f070006;
         /**  AddBeaconActivity 
          */
         public static final int ble_not_supported=0x7f070002;
         public static final int hello_world=0x7f070001;
+        public static final int select_alarm_ring=0x7f070008;
+        public static final int ten_kilometers=0x7f070007;
     }
     public static final class style {
         /** 
@@ -605,6 +631,9 @@ containing a value of this type.
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f080001;
+        public static final int TvTextShow15Black=0x7f080002;
+        public static final int TvTextShow16Black=0x7f080003;
+        public static final int TvTextShow18Black=0x7f080004;
     }
     public static final class styleable {
         /** Attributes that can be used with a CircleImageView.

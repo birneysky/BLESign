@@ -39,7 +39,6 @@ public class AddNewTrackerActivity extends Activity {
 	private FrameLayout layout_add_image;
 	private EditText edt_ibeacon_name;
 	private Button btn_finish_pair;
-	private ToggleButton tbtnSwitch;
 	private CircleImageView img_pic;
 	private View layout;
 	private String mPicName="";
@@ -47,7 +46,6 @@ public class AddNewTrackerActivity extends Activity {
 	private static final String IMAGE_UNSPECIFIED = "image/*";
 	private String mResultPicPath=Consts.IMG_PATH;//Environment.getExternalStorageDirectory()+ PopupWindows.PIC_PATH;
 	Uri uritempFile ;
-	private int mSleepMode;
 	private static String TAG = AddNewTrackerActivity.class.getSimpleName();
 
 	@Override
@@ -101,7 +99,7 @@ public class AddNewTrackerActivity extends Activity {
 					if(!"".equals(mPicName) && mPicName.length() != 0){
 						data.putExtra("picPath", mPicName);
 					}
-					setResult(AddBeaconActivity.REQEUSET_ADD_IBEACON_NAME, data);
+					setResult(RESULT_OK, data);
 					finish();
 				}
 			}
