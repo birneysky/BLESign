@@ -25,6 +25,10 @@
 	    <item name="android:textColor">@color/black</item>
 	    <item name="android:textSize">16sp</item>
 	</style>
+	<style name="TvTextShow16Gray">
+	    <item name="android:textColor">@color/gray</item>
+	    <item name="android:textSize">16sp</item>
+	</style>
 	<style name="TvTextShow18Black">
 	    <item name="android:textColor">@color/black</item>
 	    <item name="android:textSize">18sp</item>

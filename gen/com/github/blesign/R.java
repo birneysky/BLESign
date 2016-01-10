@@ -592,17 +592,23 @@ containing a value of this type.
         public static final int add_beacon_center_notice_text=0x7f070005;
         public static final int add_beacon_center_notice_text_help=0x7f070004;
         public static final int add_beacon_notice_text=0x7f070003;
-        public static final int alarm_ring_name=0x7f070009;
+        public static final int alarm_ring_name=0x7f07000f;
         public static final int app_name=0x7f070000;
-        /**  MainActivity 
-         */
-        public static final int base_kilometers=0x7f070006;
+        public static final int base_kilometers=0x7f07000c;
         /**  AddBeaconActivity 
          */
         public static final int ble_not_supported=0x7f070002;
+        /**  MainActivity 
+         */
+        public static final int disconnect_delete=0x7f070006;
         public static final int hello_world=0x7f070001;
-        public static final int select_alarm_ring=0x7f070008;
-        public static final int ten_kilometers=0x7f070007;
+        public static final int open_camera=0x7f070007;
+        public static final int select_alarm_ring=0x7f07000e;
+        public static final int show_distance=0x7f07000b;
+        public static final int ten_kilometers=0x7f07000d;
+        public static final int tracker_connect=0x7f070008;
+        public static final int tracker_disconnect=0x7f070009;
+        public static final int tracker_distance=0x7f07000a;
     }
     public static final class style {
         /** 
@@ -633,7 +639,8 @@ containing a value of this type.
         public static final int AppTheme=0x7f080001;
         public static final int TvTextShow15Black=0x7f080002;
         public static final int TvTextShow16Black=0x7f080003;
-        public static final int TvTextShow18Black=0x7f080004;
+        public static final int TvTextShow16Gray=0x7f080004;
+        public static final int TvTextShow18Black=0x7f080005;
     }
     public static final class styleable {
         /** Attributes that can be used with a CircleImageView.

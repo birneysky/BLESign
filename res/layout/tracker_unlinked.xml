@@ -22,7 +22,7 @@
             >
     	    <TextView 
     	        android:id="@+id/tv_tracker_disconnect_delete"
-                android:text="@string/select_alarm_ring"
+                android:text="@string/disconnect_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
@@ -58,7 +58,7 @@
             >
     	    <TextView 
     	        android:id="@+id/tv_tracker_open_camera"
-                android:text="@string/select_alarm_ring"
+                android:text="@string/open_camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
@@ -94,7 +94,7 @@
             >
     	    <TextView 
     	        android:id="@+id/tv_tracker_connect"
-                android:text="@string/select_alarm_ring"
+                android:text="@string/tracker_connect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
@@ -122,7 +122,7 @@
             >
     	    <TextView 
     	        android:id="@+id/tv_tracker_disconnect"
-                android:text="@string/select_alarm_ring"
+                android:text="@string/tracker_disconnect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
@@ -150,7 +150,7 @@
             >
     	    <TextView 
     	        android:id="@+id/tv_tracker_distance"
-                android:text="@string/select_alarm_ring"
+                android:text="@string/tracker_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
@@ -160,10 +160,10 @@
                 android:id="@+id/tv_tracker_show_distance"
                 android:layout_toRightOf="@id/tv_tracker_distance"
                 android:layout_marginLeft="20dp"
-                android:text="@string/alarm_ring_name"
+                android:text="@string/show_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TvTextShow18Black"
+                style="@style/TvTextShow16Gray"
                 android:layout_centerVertical="true"/>
     	</RelativeLayout>
         <ImageView 
@@ -243,7 +243,7 @@
                 android:text="@string/alarm_ring_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TvTextShow18Black"
+                style="@style/TvTextShow16Gray"
                 android:layout_centerVertical="true"/>
             <ImageView 
                 android:id="@+id/iv_tracker_safity_list"

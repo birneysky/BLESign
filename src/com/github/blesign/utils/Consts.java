@@ -6,7 +6,11 @@ import android.os.Environment;
 
 public class Consts {
 	
+	//DB
 	public static final String DB_NAME = "ibeacon.db";
+	
+	//Camera
+	public static final int CAMERA_REQUEST_CODE = 5011;
 	public static final int TRACKER_STATE_UNSELECTED = 0; // 未连接
 	public static final int TRACKER_STATE_LOST =1;		// 已丢失
 	public static final int TRACKER_STATE_TRACKING = 2;	// 正在防丢
