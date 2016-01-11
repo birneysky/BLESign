@@ -36,6 +36,7 @@ import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.github.blesign.adapter.GridViewAdapter;
 import com.github.blesign.adapter.GridViewAdapter.ViewHolder;
@@ -62,7 +63,9 @@ public class MainActivity extends Activity {
 	private View view; // 防丢器属性view
 	private LayoutInflater inflater;
 	private PopupWindow pop;
-	private RelativeLayout layoutOpenCamera;
+	private RelativeLayout layoutOpenCamera, layoutSelectRing;
+	private TextView tvShowRingName;
+	
 	private  int mSlectedItem = -1; // 当前防丢器在adapter中的位置（size-1）
 	private Tracker tracker; // 当前防丢器
 	private SeekBar mSeekBar;
@@ -187,6 +190,13 @@ public class MainActivity extends Activity {
 			}else if(resultCode == RESULT_CANCELED){
 				LogUtil.i(TAG, "resultCode == RESULT_CANCELED");
 			}
+		}else if(requestCode == Consts.REQUEST_SELECT_RING){
+			if(resultCode == RESULT_OK && data != null){
+				String ringName = data.getStringExtra(Consts.EXTRA_RING_NAME);
+				tvShowRingName.setText(ringName);
+			}else{
+				
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -194,6 +204,8 @@ public class MainActivity extends Activity {
 	protected void setupPopView() {
 		// TODO Auto-generated method stub
 		layoutOpenCamera = (RelativeLayout)view.findViewById(R.id.layout_tracker_open_camera);
+		layoutSelectRing = (RelativeLayout)view.findViewById(R.id.layout_select_ring);
+		tvShowRingName = (TextView)view.findViewById(R.id.tv_show_ring_name);
 	}
 	
 	protected void addPopListener() {
@@ -201,8 +213,17 @@ public class MainActivity extends Activity {
 		layoutOpenCamera.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				openCamera();
+			}
+		});
+		
+		layoutSelectRing.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(MainActivity.this, SelectRingActivity.class);
+				
+				startActivityForResult(intent, Consts.REQUEST_SELECT_RING);
 			}
 		});
 	}
@@ -282,7 +303,7 @@ public class MainActivity extends Activity {
 	    } catch (FileNotFoundException e) {
 	        e.printStackTrace();
 	    }
-	    //delete picture
+	    //delete another picture
 	    String params[] = new String[]{getFileByUri(Uri.parse(s))};
 	    MainActivity.this.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + " LIKE ?", params);
 	    // 最后通知图库更新

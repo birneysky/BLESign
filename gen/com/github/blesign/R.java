@@ -477,6 +477,11 @@ containing a value of this type.
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
+
+         Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively).
+    
          */
         public static final int activity_horizontal_margin=0x7f060000;
         public static final int activity_vertical_margin=0x7f060001;
@@ -506,74 +511,84 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020010;
         public static final int icon_addpic_unfocused=0x7f020011;
         public static final int icon_data_select=0x7f020012;
-        public static final int listitem_add_device=0x7f020013;
-        public static final int lost_item_bg=0x7f020014;
-        public static final int no_tracker_item_bg=0x7f020015;
-        public static final int searching_item_bg=0x7f020016;
-        public static final int selected_item_bg=0x7f020017;
-        public static final int selected_tag=0x7f020018;
-        public static final int text_while=0x7f020019;
-        public static final int unselected_item_bg=0x7f02001a;
-        public static final int whatsnew_btn_nor=0x7f02001b;
-        public static final int whatsnew_btn_pressed=0x7f02001c;
-        public static final int youjiantou_light=0x7f02001d;
+        public static final int imageview_selector=0x7f020013;
+        public static final int listitem_add_device=0x7f020014;
+        public static final int lost_item_bg=0x7f020015;
+        public static final int no_tracker_item_bg=0x7f020016;
+        public static final int ring_checked=0x7f020017;
+        public static final int ring_pressed=0x7f020018;
+        public static final int searching_item_bg=0x7f020019;
+        public static final int selected_item_bg=0x7f02001a;
+        public static final int selected_tag=0x7f02001b;
+        public static final int text_while=0x7f02001c;
+        public static final int unselected_item_bg=0x7f02001d;
+        public static final int whatsnew_btn_nor=0x7f02001e;
+        public static final int whatsnew_btn_pressed=0x7f02001f;
+        public static final int youjiantou_light=0x7f020020;
     }
     public static final class id {
-        public static final int add_new_tracker_layout=0x7f090005;
-        public static final int add_new_tracker_pic=0x7f090007;
-        public static final int bt=0x7f090010;
-        public static final int btn_activity_image_bucket_cancle=0x7f09000e;
-        public static final int btn_activity_image_grid_cancle=0x7f090011;
-        public static final int btn_add_tracker_moddle_notice=0x7f090009;
-        public static final int btn_connection_state=0x7f09000c;
-        public static final int circleImageView_tracker_photo=0x7f090014;
-        public static final int circleImageView_tracker_state_bg=0x7f090018;
-        public static final int count=0x7f09001f;
-        public static final int gridView_trackers=0x7f090012;
-        public static final int gridview=0x7f09000f;
-        public static final int image=0x7f09001c;
-        public static final int isselected=0x7f09001d;
-        public static final int item_image_grid_text=0x7f090020;
-        public static final int item_popupwindows_Photo=0x7f090023;
-        public static final int item_popupwindows_camera=0x7f090022;
-        public static final int item_popupwindows_cancel=0x7f090024;
-        public static final int iv_add_beacon_small_point=0x7f090003;
-        public static final int iv_center_notice=0x7f090000;
-        public static final int iv_circle_guid=0x7f090002;
-        public static final int iv_connection_state=0x7f09000a;
-        public static final int iv_no_tracker_item=0x7f090016;
-        public static final int iv_tracker_item_selected=0x7f09001b;
-        public static final int iv_tracker_safity_list=0x7f090036;
-        public static final int laout_add_ibeacon_image=0x7f090006;
-        public static final int layout_gridview_item=0x7f090013;
-        public static final int layout_seekbar=0x7f090030;
-        public static final int layout_state_tracker_item=0x7f090017;
-        public static final int layout_tracker_connect=0x7f090029;
-        public static final int layout_tracker_disconnect=0x7f09002b;
-        public static final int layout_tracker_disconnect_delete=0x7f090025;
-        public static final int layout_tracker_distance=0x7f09002d;
-        public static final int layout_tracker_item_selected=0x7f09001a;
-        public static final int layout_tracker_open_camera=0x7f090027;
-        public static final int layout_tracker_safity_area=0x7f090033;
-        public static final int ll_popup=0x7f090021;
-        public static final int name=0x7f09001e;
-        public static final int pop_seekbar=0x7f090032;
-        public static final int tv_add_beacon_center_notice=0x7f090001;
-        public static final int tv_add_tracker_name_notice=0x7f090008;
-        public static final int tv_connection_notice=0x7f09000d;
-        public static final int tv_connection_state=0x7f09000b;
-        public static final int tv_name_tracker_item=0x7f090019;
-        public static final int tv_show_distance_seekbar=0x7f090031;
-        public static final int tv_show_notice_below=0x7f090004;
-        public static final int tv_state_tracker_item=0x7f090015;
-        public static final int tv_tracker_connect=0x7f09002a;
-        public static final int tv_tracker_disconnect=0x7f09002c;
-        public static final int tv_tracker_disconnect_delete=0x7f090026;
-        public static final int tv_tracker_distance=0x7f09002e;
-        public static final int tv_tracker_open_camera=0x7f090028;
-        public static final int tv_tracker_safity_area=0x7f090035;
-        public static final int tv_tracker_safity_area_title=0x7f090034;
-        public static final int tv_tracker_show_distance=0x7f09002f;
+        public static final int action_settings=0x7f0a003d;
+        public static final int add_new_tracker_layout=0x7f0a0005;
+        public static final int add_new_tracker_pic=0x7f0a0007;
+        public static final int back_btn=0x7f0a0013;
+        public static final int bt=0x7f0a0010;
+        public static final int btn_activity_image_bucket_cancle=0x7f0a000e;
+        public static final int btn_activity_image_grid_cancle=0x7f0a0011;
+        public static final int btn_add_tracker_moddle_notice=0x7f0a0009;
+        public static final int btn_connection_state=0x7f0a000c;
+        public static final int circleImageView_tracker_photo=0x7f0a0017;
+        public static final int circleImageView_tracker_state_bg=0x7f0a001b;
+        public static final int count=0x7f0a0022;
+        public static final int gridView_trackers=0x7f0a0012;
+        public static final int gridview=0x7f0a000f;
+        public static final int image=0x7f0a001f;
+        public static final int isselected=0x7f0a0020;
+        public static final int item_image_grid_text=0x7f0a0023;
+        public static final int item_popupwindows_Photo=0x7f0a0026;
+        public static final int item_popupwindows_camera=0x7f0a0025;
+        public static final int item_popupwindows_cancel=0x7f0a0027;
+        public static final int iv_add_beacon_small_point=0x7f0a0003;
+        public static final int iv_center_notice=0x7f0a0000;
+        public static final int iv_circle_guid=0x7f0a0002;
+        public static final int iv_connection_state=0x7f0a000a;
+        public static final int iv_no_tracker_item=0x7f0a0019;
+        public static final int iv_tracker_item_selected=0x7f0a001e;
+        public static final int iv_tracker_safity_list=0x7f0a003c;
+        public static final int laout_add_ibeacon_image=0x7f0a0006;
+        public static final int layout_gridview_item=0x7f0a0016;
+        public static final int layout_seekbar=0x7f0a0036;
+        public static final int layout_select_ring=0x7f0a0039;
+        public static final int layout_state_tracker_item=0x7f0a001a;
+        public static final int layout_tracker_connect=0x7f0a002f;
+        public static final int layout_tracker_disconnect=0x7f0a0031;
+        public static final int layout_tracker_disconnect_delete=0x7f0a002b;
+        public static final int layout_tracker_distance=0x7f0a0033;
+        public static final int layout_tracker_item_selected=0x7f0a001d;
+        public static final int layout_tracker_open_camera=0x7f0a002d;
+        public static final int ll_popup=0x7f0a0024;
+        public static final int name=0x7f0a0021;
+        public static final int pop_seekbar=0x7f0a0038;
+        public static final int ring_lv=0x7f0a0015;
+        public static final int select_imagebtn_btn=0x7f0a002a;
+        public static final int select_imagebtn_ring_tv=0x7f0a0029;
+        public static final int selectadapter=0x7f0a0028;
+        public static final int sure_btn=0x7f0a0014;
+        public static final int tv_add_beacon_center_notice=0x7f0a0001;
+        public static final int tv_add_tracker_name_notice=0x7f0a0008;
+        public static final int tv_connection_notice=0x7f0a000d;
+        public static final int tv_connection_state=0x7f0a000b;
+        public static final int tv_name_tracker_item=0x7f0a001c;
+        public static final int tv_show_distance_seekbar=0x7f0a0037;
+        public static final int tv_show_notice_below=0x7f0a0004;
+        public static final int tv_show_ring_name=0x7f0a003b;
+        public static final int tv_state_tracker_item=0x7f0a0018;
+        public static final int tv_tracker_connect=0x7f0a0030;
+        public static final int tv_tracker_disconnect=0x7f0a0032;
+        public static final int tv_tracker_disconnect_delete=0x7f0a002c;
+        public static final int tv_tracker_distance=0x7f0a0034;
+        public static final int tv_tracker_open_camera=0x7f0a002e;
+        public static final int tv_tracker_safity_area_title=0x7f0a003a;
+        public static final int tv_tracker_show_distance=0x7f0a0035;
     }
     public static final class layout {
         public static final int activity_add_beacon=0x7f030000;
@@ -582,13 +597,19 @@ containing a value of this type.
         public static final int activity_image_bucket=0x7f030003;
         public static final int activity_image_grid=0x7f030004;
         public static final int activity_main=0x7f030005;
-        public static final int gridview_item=0x7f030006;
-        public static final int item_image_bucket=0x7f030007;
-        public static final int item_image_grid=0x7f030008;
-        public static final int item_popupwindows=0x7f030009;
-        public static final int tracker_unlinked=0x7f03000a;
+        public static final int activity_select_ring=0x7f030006;
+        public static final int gridview_item=0x7f030007;
+        public static final int item_image_bucket=0x7f030008;
+        public static final int item_image_grid=0x7f030009;
+        public static final int item_popupwindows=0x7f03000a;
+        public static final int select_iamgebutton_adapter=0x7f03000b;
+        public static final int tracker_unlinked=0x7f03000c;
+    }
+    public static final class menu {
+        public static final int select_ring=0x7f090000;
     }
     public static final class string {
+        public static final int action_settings=0x7f070011;
         public static final int add_beacon_center_notice_text=0x7f070005;
         public static final int add_beacon_center_notice_text_help=0x7f070004;
         public static final int add_beacon_notice_text=0x7f070003;
@@ -606,6 +627,7 @@ containing a value of this type.
         public static final int select_alarm_ring=0x7f07000e;
         public static final int show_distance=0x7f07000b;
         public static final int ten_kilometers=0x7f07000d;
+        public static final int title_activity_select_ring=0x7f070010;
         public static final int tracker_connect=0x7f070008;
         public static final int tracker_disconnect=0x7f070009;
         public static final int tracker_distance=0x7f07000a;

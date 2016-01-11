@@ -218,7 +218,7 @@
 	            android:paddingRight="15dp"
 	            />
     	<RelativeLayout 
-    	    android:id="@+id/layout_tracker_safity_area"
+    	    android:id="@+id/layout_select_ring"
     	    android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#E4E2DF"
@@ -236,7 +236,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"/>
             <TextView 
-                android:id="@+id/tv_tracker_safity_area"
+                android:id="@+id/tv_show_ring_name"
                 android:layout_toRightOf="@id/tv_tracker_safity_area_title"
                 android:layout_toLeftOf="@+id/iv_tracker_safity_list"
                 android:layout_marginLeft="20dp"

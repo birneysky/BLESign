@@ -9,7 +9,7 @@
     <string name="add_beacon_notice_text">将贴片放在手机屏幕上\n进行自动配对</string>
     <string name="add_beacon_center_notice_text_help">搜寻中</string>
     <string name="add_beacon_center_notice_text">将贴片\n放在这里</string>
-    
+
     <!-- MainActivity -->
     <string name="disconnect_delete">移除连接并删除设备</string>
     <string name="open_camera">打开相机</string>
@@ -21,4 +21,7 @@
     <string name="ten_kilometers">10米</string>
     <string name="select_alarm_ring">报警声音选择:</string>
     <string name="alarm_ring_name">警报音名</string>
+    <string name="title_activity_select_ring">SelectRingActivity</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

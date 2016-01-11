@@ -15,6 +15,16 @@ public class Tracker implements Serializable{
 	private int state;
 	private String device_mode;
 	private int enabled;//开启，关闭
+	
+	public String getRingName() {
+		return ringName;
+	}
+
+	public void setRingName(String ringName) {
+		this.ringName = ringName;
+	}
+
+	private String ringName;
 
 	public int getId() {
 		return id;
@@ -111,6 +121,6 @@ public class Tracker implements Serializable{
 	@Override
 	public String toString() {
 		return "Tracker: id = " + id + ", name = " + name + ", device_addr = "+ device_addr + 
-				", state = " + state + ", trackerIconPath = " + trackerIconPath + ", distance = " + distance;
+				", state = " + state + ", trackerIconPath = " + trackerIconPath + ", distance = " + distance + ", ringName = " +ringName;
 	}
 }
