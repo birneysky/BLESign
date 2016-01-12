@@ -14,6 +14,7 @@ public class Consts {
 	//select ring
 	public static final int REQUEST_SELECT_RING = 5021;
 	public static final String 	EXTRA_RING_NAME = "ringName";
+	public static final String EXTRA_RING_URI = "ringUri";
 	
 	public static final int TRACKER_STATE_UNSELECTED = 0; // 未连接
 	public static final int TRACKER_STATE_LOST =1;		// 已丢失

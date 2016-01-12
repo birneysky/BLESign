@@ -29,6 +29,10 @@ public class BeaconColumns {
 		 */
 		public final static String STATE="state";
 		
+		public final static String RING_NAME = "ringName";
+		public final static String RING_URI = "ringUri";
+	
+		
 		public static  String[] BEACON_PROJECTION = new String[] { BeaconColumns.ID, 
 															 BeaconColumns.NAME,
 															 BeaconColumns.UUID,
@@ -36,7 +40,9 @@ public class BeaconColumns {
 															 BeaconColumns.IMGURL, 
 															 BeaconColumns.DISTANCE,
 															 BeaconColumns.ENABLED,
-															 BeaconColumns.STATE
+															 BeaconColumns.STATE,
+															 BeaconColumns.RING_NAME,
+															 BeaconColumns.RING_URI
 															 };
 	
 }

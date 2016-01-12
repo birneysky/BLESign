@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -72,6 +73,8 @@ public class MainActivity extends Activity {
 	private String path;
 	private String name;
 	private File fos;
+	private Uri uri;
+	private String defaultUri, defaultName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +95,8 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		beaconDAO = new BeaconDAO(getApplicationContext());
 		inflater = LayoutInflater.from(MainActivity.this);
+		defaultUri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION).toString();
+		defaultName = "跟随系统";
 	}
 
 	private void setupView() {
@@ -132,7 +137,7 @@ public class MainActivity extends Activity {
 					setupPopView();
 					addPopListener();
 				}
-				
+				setTracker();
 				if(pop == null){
 	        		setupPop(parent, arg1, arg3, holder); 
 	        	}
@@ -166,6 +171,8 @@ public class MainActivity extends Activity {
 				tracker.setDistance(5);
 				tracker.setEnabled(0);
 				tracker.setState(Consts.TRACKER_STATE_UNSELECTED);
+				tracker.setRingName(defaultName);
+				tracker.setRingUri(defaultUri);
 				if(pic_path !=null){
 					tracker.setTrackerIconPath(pic_path);
 				}
@@ -192,24 +199,31 @@ public class MainActivity extends Activity {
 			}
 		}else if(requestCode == Consts.REQUEST_SELECT_RING){
 			if(resultCode == RESULT_OK && data != null){
+				String u = data.getStringExtra(Consts.EXTRA_RING_URI);
 				String ringName = data.getStringExtra(Consts.EXTRA_RING_NAME);
+				uri  = Uri.parse(u);
 				tvShowRingName.setText(ringName);
+				//TODO 更新数据库，更新当前数据源
+				
 			}else{
 				
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-		
-	protected void setupPopView() {
+
+	protected void setTracker() {
 		// TODO Auto-generated method stub
+		
+	}
+
+	protected void setupPopView() {
 		layoutOpenCamera = (RelativeLayout)view.findViewById(R.id.layout_tracker_open_camera);
 		layoutSelectRing = (RelativeLayout)view.findViewById(R.id.layout_select_ring);
 		tvShowRingName = (TextView)view.findViewById(R.id.tv_show_ring_name);
 	}
 	
 	protected void addPopListener() {
-		// TODO Auto-generated method stub
 		layoutOpenCamera.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {

@@ -39,6 +39,8 @@ public class BeaconDAOImpl {
 		values.put(BeaconColumns.ENABLED,beacon.getEnabled());//default ennable
 		values.put(BeaconColumns.STATE, beacon.getState());
 		values.put(BeaconColumns.DISTANCE, beacon.getDistance());
+		values.put(BeaconColumns.RING_NAME, beacon.getRingName());
+		values.put(BeaconColumns.RING_URI, beacon.getRingUri());
 		long result = db.insert(helper.BEACONS, null, values);
 		return result;
 	}
@@ -60,6 +62,8 @@ public class BeaconDAOImpl {
 				tracker.setTrackerIconPath(cursor.getString(cursor.getColumnIndex(BeaconColumns.IMGURL)));
 				tracker.setState(cursor.getInt(cursor.getColumnIndex(BeaconColumns.STATE)));
 				tracker.setDistance(cursor.getInt(cursor.getColumnIndex(BeaconColumns.DISTANCE)));
+				tracker.setRingName(cursor.getString(cursor.getColumnIndex(BeaconColumns.RING_NAME)));
+				tracker.setRingUri(cursor.getString(cursor.getColumnIndex(BeaconColumns.RING_URI)));
 			}
 			cursor.close();
 		 }
@@ -85,6 +89,8 @@ public class BeaconDAOImpl {
 				tracker.setTrackerIconPath(cursor.getString(cursor.getColumnIndex(BeaconColumns.IMGURL)));
 				tracker.setState(cursor.getInt(cursor.getColumnIndex(BeaconColumns.STATE)));
 				tracker.setDistance(cursor.getInt(cursor.getColumnIndex(BeaconColumns.DISTANCE)));
+				tracker.setRingName(cursor.getString(cursor.getColumnIndex(BeaconColumns.RING_NAME)));
+				tracker.setRingUri(cursor.getString(cursor.getColumnIndex(BeaconColumns.RING_URI)));
 				list.add(tracker);
 			}
 			cursor.close();

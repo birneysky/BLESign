@@ -34,7 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.zip.ZipEntry;
@@ -48,9 +47,6 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.github.blesign.model.IbeaconLocation;
-import com.google.gson.Gson;
 
 /**
  * This class includes a small subset of standard GATT attributes for demonstration purposes.
@@ -86,47 +82,6 @@ public class Utils {
         return result;
     }
 	
-    /**
-     * 文件读写
-     */
-	public static void putToSDcardFile(IbeaconLocation location) {
-
-		// 获取扩展SD卡设备状�?
-		String sDStateString = android.os.Environment.getExternalStorageState();
-		File myFile = null;
-		// 拥有可读可写权限
-		if (sDStateString.equals(android.os.Environment.MEDIA_MOUNTED)) {
-			try {
-				// 获取扩展存储设备的文件目�?
-               File SDFile = android.os.Environment.getExternalStorageDirectory();
-               File destDir = new File(SDFile.getAbsolutePath() +File.separator+ "ibeacon");//文件目录
-				if (!destDir.exists()) {// 判断目录是否存在，不存在创建
-					destDir.mkdir();// 创建目录
-				}
-				// 打开文件
-				myFile = new File(destDir + File.separator + LOCATIONFILE);
-				// 判断文件是否存在,不存在则创建
-				if (!myFile.exists()) {
-					myFile.createNewFile();// 创建文件
-				}
-				// 写数�? 注意这里，两个参数，第一个是写入的文件，第二个是指是覆盖还是追加�?
-				// 默认是覆盖的，就是不写第二个参数，这里设置为true就是说不覆盖，是在后面追加�?
-				Gson gson =  new Gson();
-				String json = gson.toJson(location);
-				if(json!=null){
-					FileOutputStream outputStream = null;
-					outputStream = new FileOutputStream(myFile, true);
-					outputStream.write(json.getBytes());// 写入内容
-					outputStream.close();// 关闭�?
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				Log.i(TAG, "发生异常:" + e);
-			}
-
-		}
-	}
-
 	/**
 	 * @param fileName
 	 * @param btnText
@@ -172,65 +127,6 @@ public class Utils {
 
 		}
 	}
-
-	/**
-	 * 该方法主要用于将存储到文件中
-	 */
-	public static HashMap<String,ArrayList<IbeaconLocation>> getTextToSDcardFile() {
-		List<String> list = new ArrayList<String>();
-		FileReader reader = null;
-		BufferedReader bRreader = null;
-		HashMap<String,ArrayList<IbeaconLocation>> results = new HashMap<String,ArrayList<IbeaconLocation>>();
-		// 获取扩展SD卡设备状�?
-		String sDStateString = android.os.Environment.getExternalStorageState();
-		File myFile = null;
-		// 拥有可读可写权限
-		if (sDStateString.equals(android.os.Environment.MEDIA_MOUNTED)) {
-			try {
-				// 获取扩展存储设备的文件目�?
-               File SDFile = android.os.Environment.getExternalStorageDirectory();
-               File destDir = new File(SDFile.getAbsolutePath() +File.separator+ "ibeacon"+File.separator +LOCATIONFILE );//文件目录
-				// 判断文件是否存在,不存在则创建
-				if (!destDir.exists()) {
-					System.out.println("对不起，找不到您要的文件");
-					return results;
-				} else {
-					// 写数�? 注意这里，两个参数，第一个是写入的文件，第二个是指是覆盖还是追加�?
-					// 默认是覆盖的，就是不写第二个参数，这里设置为true就是说不覆盖，是在后面追加�?
-					reader = new FileReader(destDir);
-					bRreader = new BufferedReader(reader);
-					String line = null;
-					Gson gson = new Gson();
-					while ((line = bRreader.readLine()) != null){
-						IbeaconLocation location = gson.fromJson(line, IbeaconLocation.class);
-						if(location!=null) {
-							String id = location.getId();
-							if(results.containsKey(id)){
-								results.get(id).add(location);
-							}else{
-								ArrayList<IbeaconLocation> locationsArr =new ArrayList<IbeaconLocation>();
-								locationsArr.add(location);
-								results.put(id, locationsArr);
-							}
-						
-						}
-					}
-					return results;
-				}
-			} catch (Exception e) {
-				e.getStackTrace();
-			} finally {
-				if (reader != null)
-					reader = null;
-				if (bRreader != null)
-					bRreader = null;
-			}
-
-		}
-		return results;
-	}
-	
-	
 	
 	/**
 	 * 取消蓝牙配对

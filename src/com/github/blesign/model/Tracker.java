@@ -16,6 +16,17 @@ public class Tracker implements Serializable{
 	private String device_mode;
 	private int enabled;//开启，关闭
 	
+	private String ringName;//铃声名字
+	private String ringUri;//铃声Uri
+	
+	public String getRingUri() {
+		return ringUri;
+	}
+
+	public void setRingUri(String ringUri) {
+		this.ringUri = ringUri;
+	}
+
 	public String getRingName() {
 		return ringName;
 	}
@@ -24,7 +35,6 @@ public class Tracker implements Serializable{
 		this.ringName = ringName;
 	}
 
-	private String ringName;
 
 	public int getId() {
 		return id;
