@@ -16,6 +16,9 @@ public class Consts {
 	public static final String 	EXTRA_RING_NAME = "ringName";
 	public static final String EXTRA_RING_URI = "ringUri";
 	
+	//add ibeacon
+	public static final int DEFAULT_DISTANCE = 3;
+	
 	public static final int TRACKER_STATE_UNSELECTED = 0; // 未连接
 	public static final int TRACKER_STATE_LOST =1;		// 已丢失
 	public static final int TRACKER_STATE_TRACKING = 2;	// 正在防丢

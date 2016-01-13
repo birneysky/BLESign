@@ -22,8 +22,8 @@ public class DBHelper extends SQLiteOpenHelper {
 			+ BeaconColumns.DISTANCE + " INTEGER DEFAULT(1), " 
 			+ BeaconColumns.ENABLED + " INTEGER NOT NULL DEFAULT(0)," 
 			+ BeaconColumns.STATE+ " INTEGER NOT NULL DEFAULT(1),"
-			+ BeaconColumns.RING_NAME + "text,"
-			+ BeaconColumns.RING_URI + "text"
+			+ BeaconColumns.RING_NAME + " text,"
+			+ BeaconColumns.RING_URI + " text"
 			+");";
 	
 	public DBHelper(Context context, String name, CursorFactory factory, int version) {

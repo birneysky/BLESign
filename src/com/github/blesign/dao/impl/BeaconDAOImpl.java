@@ -10,13 +10,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class BeaconDAOImpl {
 	
 	private DBHelper helper;
 	private SQLiteDatabase db;
 	private String[] mSingleArg = new String[1];
+	private String IDwhereClause = BeaconColumns.ID+"=?";
+//	private String MACwhereClause = BeaconColumns.MAC+"=?";
 	private static final String MAC_SELECTION = BeaconColumns.MAC + "=?";
 	
 	public BeaconDAOImpl() {
@@ -98,4 +99,20 @@ public class BeaconDAOImpl {
 		return list;
 	}
 
+	@SuppressWarnings("static-access")
+	public int updateRing(int id, String ringName, String uri){
+		ContentValues values = new ContentValues();
+		values.put(BeaconColumns.RING_NAME, ringName);
+		values.put(BeaconColumns.RING_URI, uri);
+		return db.update(helper.BEACONS, values, IDwhereClause, new String[id]);
+	}
+
+	@SuppressWarnings("static-access")
+	public int updateDistanceByMac(String device_addr, int progress) {
+		// TODO Auto-generated method stub
+		mSingleArg[0] = device_addr;
+		ContentValues values = new ContentValues();
+		values.put(BeaconColumns.DISTANCE, progress);
+		return db.update(helper.BEACONS, values, MAC_SELECTION, mSingleArg);
+	}
 }

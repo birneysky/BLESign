@@ -27,14 +27,14 @@
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
                 android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentStart="true"/>
     	    <ImageView 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/youjiantou_light"
                 android:scaleType="fitEnd"
                 android:layout_centerVertical="true"
-				android:layout_alignParentRight="true"
+				android:layout_alignParentEnd="true"
 				android:contentDescription="@null"/>
     	</RelativeLayout>
         <ImageView 
@@ -63,14 +63,14 @@
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
                 android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentStart="true"/>
     	    <ImageView 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/youjiantou_light"
                 android:scaleType="fitEnd"
                 android:layout_centerVertical="true"
-				android:layout_alignParentRight="true"
+				android:layout_alignParentEnd="true"
 				android:contentDescription="@null"/>
     	</RelativeLayout>
         <ImageView 
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
                 android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentStart="true"/>
     	</RelativeLayout>
         <ImageView 
 	            android:layout_width="match_parent"
@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
                 android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentStart="true"/>
     	</RelativeLayout>
         <ImageView 
 	            android:layout_width="match_parent"
@@ -155,11 +155,11 @@
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
                 android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentStart="true"/>
             <TextView 
                 android:id="@+id/tv_tracker_show_distance"
-                android:layout_toRightOf="@id/tv_tracker_distance"
-                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@id/tv_tracker_distance"
+                android:layout_marginStart="20dp"
                 android:text="@string/show_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -234,12 +234,12 @@
                 android:layout_height="wrap_content"
                 style="@style/TvTextShow16Black"
                 android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentStart="true"/>
             <TextView 
                 android:id="@+id/tv_show_ring_name"
-                android:layout_toRightOf="@id/tv_tracker_safity_area_title"
-                android:layout_toLeftOf="@+id/iv_tracker_safity_list"
-                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@id/tv_tracker_safity_area_title"
+                android:layout_toStartOf="@+id/iv_tracker_safity_list"
+                android:layout_marginStart="20dp"
                 android:text="@string/alarm_ring_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -252,7 +252,7 @@
                 android:src="@drawable/youjiantou_light"
                 android:scaleType="fitEnd"
                 android:layout_centerVertical="true"
-				android:layout_alignParentRight="true"
+				android:layout_alignParentEnd="true"
 				android:contentDescription="@null"/>
     	</RelativeLayout>
     </LinearLayout>

@@ -36,4 +36,13 @@ public class BeaconDAO {
 	public ArrayList<Tracker> getAllBeacons() {
 		return beaconDAOImpl.getAllBeacons();
 	}
+	
+	public int updateRing(int id, String ringName, String uri){
+		return beaconDAOImpl.updateRing(id, ringName, uri);
+	}
+
+	public int updateDistanceByMac(String device_addr, int progress) {
+		// TODO Auto-generated method stub
+		return beaconDAOImpl.updateDistanceByMac(device_addr, progress);
+	}
 }

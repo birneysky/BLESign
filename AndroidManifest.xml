@@ -39,6 +39,8 @@
             android:label="@string/title_activity_select_ring" 
             >
         </activity>
+        <activity android:name=".photo.TestPicActivity"></activity>
+        <activity android:name=".photo.ImageGridActivity"></activity>
     </application>
 
 </manifest>

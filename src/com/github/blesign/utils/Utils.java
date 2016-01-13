@@ -41,10 +41,17 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import com.github.blesign.MainActivity;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -81,7 +88,62 @@ public class Utils {
         double result= Double.parseDouble(df.format(distance));
         return result;
     }
-	
+	/** 
+     * 通过Uri返回File文件 
+     * 注意：通过相机的是类似content://media/external/images/media/97596 
+     * 通过相册选择的：file:///storage/sdcard0/DCIM/Camera/IMG_20150423_161955.jpg 
+     * 通过查询获取实际的地址 
+     * @param uri 
+     * @return pathname
+     */  
+    public static String getFileByUri(Uri uri, Context context) {  
+        String path = null;  
+        if ("file".equals(uri.getScheme())) {  
+            path = uri.getEncodedPath();  
+            if (path != null) {  
+                path = Uri.decode(path);  
+                ContentResolver cr = context.getContentResolver();  
+                StringBuffer buff = new StringBuffer();  
+                buff.append("(").append(Images.ImageColumns.DATA).append("=").append("'" + path + "'").append(")");  
+                Cursor cur = cr.query(Images.Media.EXTERNAL_CONTENT_URI, new String[] { Images.ImageColumns._ID, Images.ImageColumns.DATA }, buff.toString(), null, null);  
+                int index = 0;  
+                int dataIdx = 0;  
+                for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {  
+                    index = cur.getColumnIndex(Images.ImageColumns._ID);  
+                    index = cur.getInt(index);  
+                    dataIdx = cur.getColumnIndex(Images.ImageColumns.DATA);  
+                    path = cur.getString(dataIdx);  
+                }  
+                cur.close();  
+                if (index == 0) {  
+                } else {  
+                    Uri u = Uri.parse("content://media/external/images/media/" + index);  
+                    LogUtil.i(TAG, "temp uri is :" + u);  
+                }  
+            }  
+            if (path != null) {  
+            	LogUtil.i(TAG, "path = "+path);
+//                return new File(path); 
+            	return path;
+            }  
+        } else if ("content".equals(uri.getScheme())) {  
+            // 4.2.2以后  
+            String[] proj = { MediaStore.Images.Media.DATA };  
+            Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);  
+            if (cursor.moveToFirst()) {  
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);  
+                path = cursor.getString(columnIndex);  
+            }  
+            cursor.close();  
+            LogUtil.i(TAG, "path = "+path);
+//            return new File(path); 
+            return path;
+        } else {  
+            LogUtil.i(TAG, "Uri Scheme:" + uri.getScheme());  
+        }  
+        return null;  
+    }
+    
 	/**
 	 * @param fileName
 	 * @param btnText

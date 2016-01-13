@@ -1,7 +1,6 @@
 package com.github.blesign;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,24 +10,21 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Images;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
@@ -37,6 +33,7 @@ import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.github.blesign.adapter.GridViewAdapter;
@@ -46,12 +43,12 @@ import com.github.blesign.model.Tracker;
 import com.github.blesign.utils.BitmapUtils;
 import com.github.blesign.utils.Consts;
 import com.github.blesign.utils.LogUtil;
-import com.github.blesign.utils.ScreenUtils;
 import com.github.blesign.utils.Utils;
 
 public class MainActivity extends Activity {
 	
 	private final String TAG = this.getClass().getSimpleName();
+	
 	//UI
 	private GridView gridViewTrackers;
 	private GridViewAdapter adapter;
@@ -60,30 +57,40 @@ public class MainActivity extends Activity {
 	//Add Beacon
 	private BeaconDAO beaconDAO;
 	
+	//拍照功能
+	private File fos;
+	private String path;
+	private String name;
+	private Uri uri;
+	
 	//窗口配置
 	private View view; // 防丢器属性view
 	private LayoutInflater inflater;
 	private PopupWindow pop;
-	private RelativeLayout layoutOpenCamera, layoutSelectRing;
-	private TextView tvShowRingName;
+	private RelativeLayout layoutOpenCamera, layoutSelectRing, 
+						   layoutDisconnectDelete, layoutConnection, layoutDisconnection;
+	private TextView tvShowRingName, tvShowDistance;
+	private SeekBar mSeekBar;
 	
 	private  int mSlectedItem = -1; // 当前防丢器在adapter中的位置（size-1）
 	private Tracker tracker; // 当前防丢器
-	private SeekBar mSeekBar;
-	private String path;
-	private String name;
-	private File fos;
-	private Uri uri;
+	
+	//设置通知铃声
 	private String defaultUri, defaultName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setData();
-        setupView();
-        addListener();
-        getData();
+        try {
+			setData();
+			setupView();
+			addListener();
+			getData();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 	private void getData() {
@@ -131,6 +138,8 @@ public class MainActivity extends Activity {
 				if(holder.ivSelectedBg.getVisibility() == View.GONE){
 					holder.ivSelectedBg.setVisibility(View.VISIBLE);
 				}
+				mSlectedItem = position;
+				tracker = adapter.getItem(position);
 				// 引入窗口配置文件  
 				if(view == null){
 					view = inflater.inflate(R.layout.tracker_unlinked, null); 
@@ -168,7 +177,7 @@ public class MainActivity extends Activity {
 				String pic_path = data.getStringExtra("picPath");
 				tracker.setName(device_name);
 				tracker.setDevice_addr(device_mac);
-				tracker.setDistance(5);
+				tracker.setDistance(Consts.DEFAULT_DISTANCE);
 				tracker.setEnabled(0);
 				tracker.setState(Consts.TRACKER_STATE_UNSELECTED);
 				tracker.setRingName(defaultName);
@@ -202,25 +211,38 @@ public class MainActivity extends Activity {
 				String u = data.getStringExtra(Consts.EXTRA_RING_URI);
 				String ringName = data.getStringExtra(Consts.EXTRA_RING_NAME);
 				uri  = Uri.parse(u);
-				tvShowRingName.setText(ringName);
-				//TODO 更新数据库，更新当前数据源
-				
+				updateCurrentTracker(ringName, u);
 			}else{
-				
+				LogUtil.i(TAG, "Select ring failed!");
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
+	private void updateCurrentTracker(String ringName, String u) {
+		beaconDAO.updateRing(tracker.getId(), ringName, u);
+		tvShowRingName.setText(ringName);
+		tracker.setRingName(ringName);
+		tracker.setRingUri(u);
+		lists.get(mSlectedItem).setRingName(ringName);
+		lists.get(mSlectedItem).setRingUri(u);
+	}
+
 	protected void setTracker() {
-		// TODO Auto-generated method stub
-		
+		tvShowDistance.setText(tracker.getDistance());
+		tvShowRingName.setText(tracker.getRingName());
+		mSeekBar.setProgress(tracker.getDistance());
 	}
 
 	protected void setupPopView() {
 		layoutOpenCamera = (RelativeLayout)view.findViewById(R.id.layout_tracker_open_camera);
 		layoutSelectRing = (RelativeLayout)view.findViewById(R.id.layout_select_ring);
 		tvShowRingName = (TextView)view.findViewById(R.id.tv_show_ring_name);
+		tvShowDistance = (TextView)view.findViewById(R.id.tv_tracker_show_distance);
+		mSeekBar = (SeekBar)view.findViewById(R.id.pop_seekbar);
+		layoutDisconnectDelete = (RelativeLayout)view.findViewById(R.id.layout_tracker_disconnect_delete);
+		layoutConnection = (RelativeLayout)view.findViewById(R.id.layout_tracker_connect);
+		layoutDisconnection = (RelativeLayout)view.findViewById(R.id.layout_tracker_disconnect);
 	}
 	
 	protected void addPopListener() {
@@ -234,16 +256,54 @@ public class MainActivity extends Activity {
 		layoutSelectRing.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				Intent intent = new Intent(MainActivity.this, SelectRingActivity.class);
-				
 				startActivityForResult(intent, Consts.REQUEST_SELECT_RING);
+			}
+		});
+		
+		mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				beaconDAO.updateDistanceByMac(tracker.getDevice_addr(), progress);
+				tvShowDistance.setText(progress+"");
+    			tracker.setDistance(progress);
+    			lists.get(mSlectedItem).setDistance(progress);
+//    			lists.set(mSlectedItem, tracker);
+			}
+		});
+		
+		layoutDisconnectDelete.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		layoutConnection.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		layoutDisconnection.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}
 	
-	private void setupPop(AdapterView<?> parent, View arg1, long arg3,
-			final ViewHolder holder) {
+	private void setupPop(AdapterView<?> parent, View arg1, long arg3, final ViewHolder holder) {
 		// 创建PopupWindow对象  
     	pop = new PopupWindow(view, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
     	// 需要设置一下此参数，点击外边可消失  
@@ -318,65 +378,11 @@ public class MainActivity extends Activity {
 	        e.printStackTrace();
 	    }
 	    //delete another picture
-	    String params[] = new String[]{getFileByUri(Uri.parse(s))};
+	    String params[] = new String[]{Utils.getFileByUri(Uri.parse(s), MainActivity.this)};
 	    MainActivity.this.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + " LIKE ?", params);
 	    // 最后通知图库更新
 	    getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(fos)));//Uri.parse("file://" + path)
 	}
 	
-	/** 
-     * 通过Uri返回File文件 
-     * 注意：通过相机的是类似content://media/external/images/media/97596 
-     * 通过相册选择的：file:///storage/sdcard0/DCIM/Camera/IMG_20150423_161955.jpg 
-     * 通过查询获取实际的地址 
-     * @param uri 
-     * @return pathname
-     */  
-    public String getFileByUri(Uri uri) {  
-        String path = null;  
-        if ("file".equals(uri.getScheme())) {  
-            path = uri.getEncodedPath();  
-            if (path != null) {  
-                path = Uri.decode(path);  
-                ContentResolver cr = MainActivity.this.getContentResolver();  
-                StringBuffer buff = new StringBuffer();  
-                buff.append("(").append(Images.ImageColumns.DATA).append("=").append("'" + path + "'").append(")");  
-                Cursor cur = cr.query(Images.Media.EXTERNAL_CONTENT_URI, new String[] { Images.ImageColumns._ID, Images.ImageColumns.DATA }, buff.toString(), null, null);  
-                int index = 0;  
-                int dataIdx = 0;  
-                for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {  
-                    index = cur.getColumnIndex(Images.ImageColumns._ID);  
-                    index = cur.getInt(index);  
-                    dataIdx = cur.getColumnIndex(Images.ImageColumns.DATA);  
-                    path = cur.getString(dataIdx);  
-                }  
-                cur.close();  
-                if (index == 0) {  
-                } else {  
-                    Uri u = Uri.parse("content://media/external/images/media/" + index);  
-                    LogUtil.i(TAG, "temp uri is :" + u);  
-                }  
-            }  
-            if (path != null) {  
-            	LogUtil.i(TAG, "path = "+path);
-//                return new File(path); 
-            	return path;
-            }  
-        } else if ("content".equals(uri.getScheme())) {  
-            // 4.2.2以后  
-            String[] proj = { MediaStore.Images.Media.DATA };  
-            Cursor cursor = MainActivity.this.getContentResolver().query(uri, proj, null, null, null);  
-            if (cursor.moveToFirst()) {  
-                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);  
-                path = cursor.getString(columnIndex);  
-            }  
-            cursor.close();  
-            LogUtil.i(TAG, "path = "+path);
-//            return new File(path); 
-            return path;
-        } else {  
-            LogUtil.i(TAG, "Uri Scheme:" + uri.getScheme());  
-        }  
-        return null;  
-    }
+
 }
