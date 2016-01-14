@@ -100,11 +100,12 @@ public class BeaconDAOImpl {
 	}
 
 	@SuppressWarnings("static-access")
-	public int updateRing(int id, String ringName, String uri){
+	public int updateRing(String mac, String ringName, String uri){
+		mSingleArg[0] = mac;
 		ContentValues values = new ContentValues();
 		values.put(BeaconColumns.RING_NAME, ringName);
 		values.put(BeaconColumns.RING_URI, uri);
-		return db.update(helper.BEACONS, values, IDwhereClause, new String[id]);
+		return db.update(helper.BEACONS, values, MAC_SELECTION, mSingleArg);
 	}
 
 	@SuppressWarnings("static-access")

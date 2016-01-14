@@ -197,8 +197,8 @@
                 android:id="@+id/pop_seekbar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:max="50"
-                android:progress="10"
+                android:max="10"
+                android:progress="5"
                 android:layout_weight="1"/>
             <TextView 
                 android:text="@string/ten_kilometers"

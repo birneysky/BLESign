@@ -37,8 +37,8 @@ public class BeaconDAO {
 		return beaconDAOImpl.getAllBeacons();
 	}
 	
-	public int updateRing(int id, String ringName, String uri){
-		return beaconDAOImpl.updateRing(id, ringName, uri);
+	public int updateRing(String mac, String ringName, String uri){
+		return beaconDAOImpl.updateRing(mac, ringName, uri);
 	}
 
 	public int updateDistanceByMac(String device_addr, int progress) {

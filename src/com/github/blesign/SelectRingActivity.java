@@ -28,18 +28,20 @@ public class SelectRingActivity extends Activity {
 	Button sureBtn;
 	SharedPreferences sp;
 	SharedPreferences.Editor spe;
+	String ringMac;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_select_ring);
+		ringMac = getIntent().getStringExtra(Consts.DEVICE_MAC);
 		/*初始化SharedPreferences*/
 		sp = getSharedPreferences("ring", 1);
 		spe = sp.edit();
 		
 		/*初始化listView*/
 		listView = (ListView) findViewById(R.id.ring_lv);
-		ringAdapter = new SelectRingAdapter(this, sp.getInt("ring", 0));
+		ringAdapter = new SelectRingAdapter(this, sp.getInt(ringMac, 0));
 		listView.setAdapter(ringAdapter);
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		listView.setOnItemClickListener(mOnItemClickListener);
@@ -71,11 +73,12 @@ public class SelectRingActivity extends Activity {
 			/*判断位置不为0则播放的条目为position-1*/
 			if (position != 0) {
 				try {
-					RingtoneManager rm = new RingtoneManager(SelectRingActivity.this);
+					rm = new RingtoneManager(SelectRingActivity.this);
 					rm.setType(RingtoneManager.TYPE_NOTIFICATION);
 					rm.getCursor();
 					rm.getRingtone(position - 1).play();
-					
+					ringUri = rm.getRingtoneUri(position - 1).toString();
+					ringName = ringAdapter.getItem(listView.getCheckedItemPosition())+"";
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -85,12 +88,15 @@ public class SelectRingActivity extends Activity {
 				Uri uri = RingtoneManager.getActualDefaultRingtoneUri(
 						SelectRingActivity.this, RingtoneManager.TYPE_NOTIFICATION);
 				RingtoneManager.getRingtone(SelectRingActivity.this, uri).play();
+				ringUri = uri.toString();
+				ringName = "跟随系统";
 			}
 
 		}
 
 	};
-	protected String ringName;
+	protected String ringName, ringUri;
+	private RingtoneManager rm;
 
 	/*按钮点击事件*/
 	private OnClickListener mOnClickListener = new OnClickListener() {
@@ -104,10 +110,11 @@ public class SelectRingActivity extends Activity {
 				break;
 			/*保存按钮则保存SharedPreferences中的数据*/
 			case R.id.sure_btn:
-				spe.putInt("ring", listView.getCheckedItemPosition()).commit();
-				Toast.makeText(SelectRingActivity.this, "提示音保存成功", Toast.LENGTH_SHORT).show();
-				ringName = ringAdapter.getItem(listView.getCheckedItemPosition())+"";
-				setResult(RESULT_OK, new Intent().putExtra(Consts.EXTRA_RING_NAME, ringName));
+				spe.putInt(ringMac, listView.getCheckedItemPosition()).commit();
+//				Toast.makeText(SelectRingActivity.this, "提示音保存成功", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent().putExtra(Consts.EXTRA_RING_NAME, ringName);
+				intent.putExtra(Consts.EXTRA_RING_URI, ringUri);
+				setResult(RESULT_OK, intent);
 				finish();
 				break;
 			}

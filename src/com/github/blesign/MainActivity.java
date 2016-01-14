@@ -220,7 +220,8 @@ public class MainActivity extends Activity {
 	}
 
 	private void updateCurrentTracker(String ringName, String u) {
-		beaconDAO.updateRing(tracker.getId(), ringName, u);
+		int res = beaconDAO.updateRing(tracker.getDevice_addr(), ringName, u);
+		if(res == 0)	return;
 		tvShowRingName.setText(ringName);
 		tracker.setRingName(ringName);
 		tracker.setRingUri(u);
@@ -229,7 +230,7 @@ public class MainActivity extends Activity {
 	}
 
 	protected void setTracker() {
-		tvShowDistance.setText(tracker.getDistance());
+		tvShowDistance.setText(tracker.getDistance()+"");
 		tvShowRingName.setText(tracker.getRingName());
 		mSeekBar.setProgress(tracker.getDistance());
 	}
@@ -257,6 +258,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(MainActivity.this, SelectRingActivity.class);
+				intent.putExtra(Consts.DEVICE_MAC, tracker.getDevice_addr());
 				startActivityForResult(intent, Consts.REQUEST_SELECT_RING);
 			}
 		});
@@ -352,36 +354,40 @@ public class MainActivity extends Activity {
 	 * 保存照片到系统相册
 	 */
 	public void savePhoto() {
-	    // 首先保存图片
-	    File appDir = new File(Environment.getExternalStorageDirectory()+"/DCIM/Camera");
-	    if (!appDir.exists()) {
-	        appDir.mkdirs();
-	    }
-//	    File file = new File(path, name);
-	    Bitmap bmp = BitmapUtils.loadBitmap(fos.getPath(), 800, 100);
-	    try {
-	        OutputStream fs = new FileOutputStream(fos.getPath());
-	        bmp.compress(CompressFormat.PNG, 70, fs);
-	        fs.flush();
-	        fs.close();
-	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-		}
-	    
-	    // 其次把文件插入到系统图库
-	    String s = null;
-	    try {
-	        s = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), fos.getAbsolutePath(), name, null);
-	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
-	    }
-	    //delete another picture
-	    String params[] = new String[]{Utils.getFileByUri(Uri.parse(s), MainActivity.this)};
-	    MainActivity.this.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + " LIKE ?", params);
-	    // 最后通知图库更新
-	    getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(fos)));//Uri.parse("file://" + path)
+		new Thread(){
+			public void run() {
+				// 首先保存图片
+			    File appDir = new File(Environment.getExternalStorageDirectory()+"/DCIM/Camera");
+			    if (!appDir.exists()) {
+			        appDir.mkdirs();
+			    }
+//			    File file = new File(path, name);
+			    Bitmap bmp = BitmapUtils.loadBitmap(fos.getPath(), 800, 1000);
+			    try {
+			        OutputStream fs = new FileOutputStream(fos.getPath());
+			        bmp.compress(CompressFormat.PNG, 70, fs);
+			        fs.flush();
+			        fs.close();
+			    } catch (FileNotFoundException e) {
+			        e.printStackTrace();
+			    } catch (IOException e) {
+			        e.printStackTrace();
+				}
+			    
+			    // 其次把文件插入到系统图库
+			    String s = null;
+			    try {
+			        s = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), fos.getAbsolutePath(), name, null);
+			    } catch (FileNotFoundException e) {
+			        e.printStackTrace();
+			    }
+			    //delete another picture
+			    String params[] = new String[]{Utils.getFileByUri(Uri.parse(s), MainActivity.this)};
+			    MainActivity.this.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + " LIKE ?", params);
+			    // 最后通知图库更新
+			    getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(fos)));//Uri.parse("file://" + path)
+			}
+		}.start();
 	}
 	
 
