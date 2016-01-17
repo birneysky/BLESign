@@ -68,7 +68,8 @@ public class Utils {
 	 */
 	public static ArrayList<String> ibeaconArr= new ArrayList<String>();
 	
-
+	public static ArrayList<String> connectorArr = new ArrayList<String>();
+	
 	private static int txPower =-59;//设备距离一米的dBm值
 	
 	public static double calculateDistance(double rssi) {
@@ -478,38 +479,19 @@ public class Utils {
             w = 0;
         return weekDays[w];
     }
-    /**
-     * 获取当前日期是星期几:周一，周二，周三，周四，周五，周六，周日
-     * @return 当前日期是星期几
-     */
-    public static String getWeekOfDateStr() {
-    	Date date =new Date();
-        String[] weekDays = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
-        Calendar cal = Calendar.getInstance();
-//        cal.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-        cal.setTime(date);
-        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
-        if (w < 0)
-            w = 0;
-        return weekDays[w];
-    }
-    
-    public static String getDayOfStr(String day){
-    	if("1".equals(day)){  
-    		day ="周日";  
-        }else if("2".equals(day)){  
-        	day ="周一";  
-        }else if("3".equals(day)){  
-        	day ="周二";  
-        }else if("4".equals(day)){  
-        	day ="周三";  
-        }else if("5".equals(day)){  
-        	day ="周四";  
-        }else if("6".equals(day)){  
-        	day ="周五";  
-        }else if("7".equals(day)){  
-        	day ="周六";  
+    public static String bytesToHexString(byte[] src){  
+        StringBuilder stringBuilder = new StringBuilder("");  
+        if (src == null || src.length <= 0) {  
+            return null;  
         }  
-    	return day;
-    }
+        for (int i = 0; i < src.length; i++) {  
+            int v = src[i] & 0xFF;  
+            String hv = Integer.toHexString(v);  
+            if (hv.length() < 2) {  
+                stringBuilder.append(0);  
+            }  
+            stringBuilder.append(hv);  
+        }  
+        return stringBuilder.toString();  
+    } 
 }

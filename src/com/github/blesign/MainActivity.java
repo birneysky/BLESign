@@ -5,12 +5,25 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.drawable.BitmapDrawable;
@@ -18,8 +31,10 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,6 +55,8 @@ import com.github.blesign.adapter.GridViewAdapter;
 import com.github.blesign.adapter.GridViewAdapter.ViewHolder;
 import com.github.blesign.dao.BeaconDAO;
 import com.github.blesign.model.Tracker;
+import com.github.blesign.operation.BluetoothLeService;
+import com.github.blesign.operation.SampleGattAttributes;
 import com.github.blesign.utils.BitmapUtils;
 import com.github.blesign.utils.Consts;
 import com.github.blesign.utils.LogUtil;
@@ -77,6 +94,59 @@ public class MainActivity extends Activity {
 	
 	//设置通知铃声
 	private String defaultUri, defaultName;
+	
+	private boolean mConnected;
+	private BluetoothLeService mBluetoothLeService;
+	// Code to manage Service lifecycle.
+	private ServiceConnection mServiceConnection = new ServiceConnection() {
+		@Override
+		public void onServiceConnected(ComponentName componentName, IBinder service) {
+			mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
+			if (!mBluetoothLeService.initialize()) {
+				Log.e(TAG, "Unable to initialize Bluetooth");
+			}
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName componentName) {
+			mBluetoothLeService = null;
+		}
+	};
+	private Thread connectorThread;
+
+	protected List<BluetoothGattService> list;
+	protected BluetoothGattService alarmService, photoService;
+	protected BluetoothGattCharacteristic alarmCharacteristic, photoCharacteristic;
+
+	// Handles various events fired by the Service.
+	// ACTION_GATT_CONNECTED: connected to a GATT server.
+	// ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
+	// ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
+	// ACTION_DATA_AVAILABLE: received data from the device. 
+	// This can be a result of read or notification operations.
+	private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			final String action = intent.getAction();
+			Log.i(TAG, "action = " + action);
+			if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+				mConnected = true;
+				
+			} else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+				mConnected = false;
+			} else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+				// Show all the supported services and characteristics on the user interface.
+				// TODO 检查是否包含特定服务和特性，进行读写监听操作
+				displayGattServices(mBluetoothLeService.getSupportedGattServices());
+				connectorListener();
+			} else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+				//
+				String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
+				LogUtil.i(TAG, "data = "+  data);
+			}
+		}
+	};
+	
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,16 +156,100 @@ public class MainActivity extends Activity {
 			setData();
 			setupView();
 			addListener();
-			getData();
+			initService();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.e(TAG, e.toString());
 		}
     }
 
-	private void getData() {
+    private boolean scanning = true;
+
+    protected void connectorListener() {
 		// TODO Auto-generated method stub
-		
+    	if(connectorThread == null){
+    		connectorThread = new Thread(){
+    			@Override
+    			public void run() {
+    				// TODO 循环扫描iBeacon
+    				while(scanning){
+    					try {
+    						this.sleep(1000);
+    					} catch (InterruptedException e) {
+    						e.printStackTrace();
+    					}
+    					boolean rssi = mBluetoothLeService.getRssiVal();
+    					mBluetoothLeService.readCharacteristic(photoCharacteristic);
+//    					mBluetoothLeService.wirteCharacteristic(alarmCharacteristic);
+    				}
+    				
+    				super.run();
+    			}
+    		};
+    		connectorThread.start();
+    	}
+    	Utils.connectorArr.add(tracker.getDevice_addr());
+	}
+
+    
+ // Demonstrates how to iterate through the supported GATT
+ 	// Services/Characteristics.
+ 	// In this sample, we populate the data structure that is bound to the
+ 	// ExpandableListView
+ 	// on the UI.
+ 	private void displayGattServices(List<BluetoothGattService> gattServices) {
+ 		if (gattServices == null)
+ 			return;
+ 		String uuid = null;
+ 		// Loops through available GATT Services.
+ 		for (BluetoothGattService gattService : gattServices) {
+ 			uuid = gattService.getUuid().toString();
+ 			if(SampleGattAttributes.SETTING_ALARM_SERVICE.equals(uuid)){
+ 				List<BluetoothGattCharacteristic> gattCharacteristics = gattService.getCharacteristics();
+ 				for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
+ 	 				String alarm = gattCharacteristic.getUuid().toString();
+ 	 				if(SampleGattAttributes.SETTING_ALARM_CHARACTERISTIC.equals(alarm)){
+ 	 					LogUtil.i(TAG, "alarm");
+ 	 					alarmCharacteristic = gattCharacteristic;
+ 	 				}
+ 	 			}
+ 			}else if(SampleGattAttributes.SETTING_CAMERA_SERVICE.equals(uuid)){
+ 				List<BluetoothGattCharacteristic> gattCharacteristics = gattService.getCharacteristics();
+ 				for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
+ 	 				String photo = gattCharacteristic.getUuid().toString();
+ 	 				if(SampleGattAttributes.SETTING_CAMERA_CHARACTERISTIC.equals(photo)){
+ 	 					LogUtil.i(TAG, "photo");
+ 	 					photoCharacteristic = gattCharacteristic;
+ 	 				}
+ 	 			}
+ 			}
+ 		}
+ 	}
+	@Override
+    protected void onResume() {
+    	// TODO Auto-generated method stub
+    	super.onResume();
+    }
+    
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(mGattUpdateReceiver);
+		mBluetoothLeService = null;
+	}
+	private void initService() {
+		Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+		boolean bll = this.getApplicationContext().bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+		if (bll) {
+			Log.i("info", "---------------");
+		} else {
+			Log.i("info", "===============");
+		}
+		registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 	}
 
 	private void setData() {
@@ -155,7 +309,6 @@ public class MainActivity extends Activity {
 	                pop.dismiss();  
 	            } else {  
 	                // 显示窗口  
-//	                pop.showAsDropDown(gvAdapter.getView((int)arg3, arg1, parent) , 0, 0);  
 	                pop.showAsDropDown(adapter.getView((int)arg3, arg1, parent));
 	                int[] location = new int[2];  
 	                arg1.getLocationOnScreen(location);  
@@ -292,7 +445,11 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+//				mBluetoothLeService.connect(tracker.getDevice_addr());
+				if (mBluetoothLeService != null) {
+					final boolean result = mBluetoothLeService.connect(tracker.getDevice_addr());
+					Log.d(TAG, "Connect request result=" + result);
+				}
 			}
 		});
 		
@@ -300,7 +457,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+				mBluetoothLeService.disconnect();
 			}
 		});
 	}
@@ -390,5 +547,13 @@ public class MainActivity extends Activity {
 		}.start();
 	}
 	
+	private static IntentFilter makeGattUpdateIntentFilter() {
+		final IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
+		intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
+		intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
+		intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+		return intentFilter;
+	}
 
 }
