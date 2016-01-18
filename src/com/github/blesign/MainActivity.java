@@ -31,7 +31,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -96,7 +98,22 @@ public class MainActivity extends Activity {
 	private int mSlectedItem = -1; // 当前防丢器在adapter中的位置（size-1）
 	private Tracker tracker; // 当前防丢器
 	
+	private Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case 1://已连接
+				
+				break;
+			case 0://已断开
+				
+				break;
+			default:
+				break;
+			}
+		}
+	};
 	private boolean mConnected;
+	
 	private BluetoothLeService mBluetoothLeService;
 	// Code to manage Service lifecycle.
 	private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -133,9 +150,15 @@ public class MainActivity extends Activity {
 			if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
 				mConnected = true;
 				// TODO 变更UI
+				Message msg = new Message();
+				msg.what = 1;
+				handler.sendMessage(msg);
 			} else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
 				mConnected = false;
 				// TODO 变更UI
+				Message msg = new Message();
+				msg.what = 0;
+				handler.sendMessage(msg);
 			} else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
 				// Show all the supported services and characteristics on the user interface.
 				// TODO 检查是否包含特定服务和特性，进行读写监听操作
