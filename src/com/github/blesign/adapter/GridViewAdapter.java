@@ -100,27 +100,13 @@ public class GridViewAdapter extends BaseAdapter {
 				holder.civTrackerPhoto.setImageBitmap(bmp);
 			}
 			int trackerState = tracker.getState();
-			if(trackerState == Consts.TRACKER_STATE_LOST){
-//				holder.frameLayoutBg.setBackgroundColor(context.getResources().getColor(R.color.bg_lost));
-				holder.tvTrackerState.setVisibility(View.VISIBLE);
-				holder.tvTrackerState.setText(Consts.TRACKER_STATE_LOST_TEXT);
-				holder.tvTrackerState.setBackgroundColor(context.getResources().getColor(R.color.bg_lost));
-				holder.civStatebg.setImageDrawable(context.getResources().getDrawable(R.drawable.lost_item_bg));
-			} else if(trackerState == Consts.TRACKER_STATE_TRACKING){
-//				holder.frameLayoutBg.setBackgroundColor(context.getResources().getColor(R.color.bg_clear));
+			if(trackerState == Consts.TRACKER_STATE_CONNECT){
 				holder.tvTrackerState.setVisibility(View.GONE);
 				holder.civStatebg.setImageDrawable(context.getResources().getDrawable(R.drawable.selected_item_bg));
-			} else if (trackerState == Consts.TRACKER_STATE_UNSELECTED) {
-//				holder.frameLayoutBg.setBackgroundColor(context.getResources().getColor(R.color.bg_clear));
+			} else if (trackerState == Consts.TRACKER_STATE_DISCONNECT) {
 				holder.tvTrackerState.setVisibility(View.GONE);
 				holder.civStatebg.setImageDrawable(context.getResources().getDrawable(R.drawable.unselected_item_bg));
-			} else if (trackerState == Consts.TRACKER_STATE_SEARCHING){
-				holder.tvTrackerState.setVisibility(View.VISIBLE);
-				holder.civStatebg.setImageDrawable(context.getResources().getDrawable(R.drawable.searching_item_bg));
 			} else if (trackerState == Consts.TRACKER_STATE_ICON_CHANGE_RED){//只需更改指示颜色为红色
-//				holder.tvTrackerState.setVisibility(View.VISIBLE);
-//				holder.tvTrackerState.setText(Consts.TRACKER_STATE_LOST_TEXT);
-//				holder.tvTrackerState.setBackgroundColor(context.getResources().getColor(R.color.bg_lost));
 				holder.civStatebg.setImageDrawable(context.getResources().getDrawable(R.drawable.lost_item_bg));
 				holder.tvTrackerState.setVisibility(View.GONE);
 			} else if (trackerState == Consts.TRACKER_STATE_ICON_CHANGE_BACK){

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -98,14 +99,15 @@ public class MainActivity extends Activity {
 	private int mSlectedItem = -1; // 当前防丢器在adapter中的位置（size-1）
 	private Tracker tracker; // 当前防丢器
 	
-	private Handler handler = new Handler(){
+	@SuppressLint("HandlerLeak") private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
+			String address = (String) msg.obj;
 			switch (msg.what) {
 			case 1://已连接
-				
+				updateConnectionState(address, 1);
 				break;
 			case 0://已断开
-				
+				updateConnectionState(address, 0);
 				break;
 			default:
 				break;
@@ -146,18 +148,19 @@ public class MainActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			final String action = intent.getAction();
+			String address = intent.getStringExtra(Consts.DEVICE_MAC);
 			Log.i(TAG, "action = " + action);
 			if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
 				mConnected = true;
-				// TODO 变更UI
 				Message msg = new Message();
 				msg.what = 1;
+				msg.obj = address;
 				handler.sendMessage(msg);
 			} else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
 				mConnected = false;
-				// TODO 变更UI
 				Message msg = new Message();
 				msg.what = 0;
+				msg.obj = address;
 				handler.sendMessage(msg);
 			} else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
 				// Show all the supported services and characteristics on the user interface.
@@ -188,7 +191,7 @@ public class MainActivity extends Activity {
 		}
     }
 
-    private boolean scanning = true;
+	private boolean scanning = true;
 
     protected void connectorListener() {
 		// TODO Auto-generated method stub
@@ -251,7 +254,6 @@ public class MainActivity extends Activity {
  	}
 	@Override
     protected void onResume() {
-    	// TODO Auto-generated method stub
     	super.onResume();
     }
     
@@ -363,7 +365,7 @@ public class MainActivity extends Activity {
 				tracker.setDevice_addr(device_mac);
 				tracker.setDistance(Consts.DEFAULT_DISTANCE);
 				tracker.setEnabled(0);
-				tracker.setState(Consts.TRACKER_STATE_UNSELECTED);
+				tracker.setState(Consts.TRACKER_STATE_DISCONNECT);
 				tracker.setRingName(defaultName);
 				tracker.setRingUri(defaultUri);
 				if(pic_path !=null){
@@ -401,6 +403,22 @@ public class MainActivity extends Activity {
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	/**
+	 * 更新设备状态，即变更小圆点颜色，灰色，蓝色，红色或黄色
+	 * @param address 某一设备地址，用来标识设备
+	 * @param i 设备状态，0：未连接，1：已连接，3：信号消失
+	 */
+    protected void updateConnectionState(String address, int i) {
+		// TODO Auto-generated method stub
+    	Tracker changedTracker = null;
+		for(Tracker tracker : lists){
+			if(address.equalsIgnoreCase(tracker.getDevice_addr())){
+				changedTracker = tracker;
+				break;
+			}
+		}
 	}
 
 	private void updateCurrentTracker(String ringName, String u) {

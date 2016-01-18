@@ -19,10 +19,10 @@ public class Consts {
 	//add ibeacon
 	public static final int DEFAULT_DISTANCE = 3;
 	
-	public static final int TRACKER_STATE_UNSELECTED = 0; // 未连接
-	public static final int TRACKER_STATE_LOST =1;		// 已丢失
-	public static final int TRACKER_STATE_TRACKING = 2;	// 正在防丢
-	public static final int TRACKER_STATE_SEARCHING = 3; // 已经丢失，正在众寻
+	public static final int TRACKER_STATE_DISCONNECT = 0; // 未连接
+	public static final int TRACKER_STATE_CONNECT = 1;//已连接
+	public static final int TRACKER_STATE_ALARM = 3;//信号消失，警报
+	
 	public static final int TRACKER_STATE_ICON_CHANGE_RED = 7;//更改指示图片为红色
 	public static final int TRACKER_STATE_ICON_CHANGE_BACK = 8;//更改指示颜色回为蓝色
 	

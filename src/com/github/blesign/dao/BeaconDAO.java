@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.github.blesign.dao.impl.BeaconDAOImpl;
 import com.github.blesign.model.Tracker;
-import com.zijin.ibeacon.db.SQLiteHelper;
 
 import android.content.Context;
 
