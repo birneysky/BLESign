@@ -5,6 +5,8 @@
     android:background="#E4E2DF" 
     android:orientation="vertical"
     tools:context="${relativePackage}.${activityClass}" >
+    <include 
+		layout="@layout/title_bar_add_beacon" />
     <GridView 
 	      android:id="@+id/gridView_trackers"
 	      android:layout_width="match_parent"

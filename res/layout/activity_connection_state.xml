@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context=".ConnectionStateActivity" >
-
+	<include 
+	    android:id="@+id/title"
+		layout="@layout/title_bar_add_beacon" />
     <ImageView 
         android:id="@+id/iv_connection_state"
         android:layout_width="wrap_content"
@@ -13,12 +15,12 @@
         android:padding="20dp"
         android:src="@drawable/connection_failed"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/tv_connection_state"/>
+        android:layout_below="@+id/title"/>
     <TextView 
         android:id="@+id/tv_connection_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_connection_state"
+        android:layout_below="@id/iv_connection_state"
         android:layout_marginBottom="20dp"
         android:textColor="@color/connection_state"
         android:text="连接未成功"
@@ -28,10 +30,10 @@
         android:id="@+id/btn_connection_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_below="@id/tv_connection_state"
         android:text="再次扫描"
         android:textSize="18sp"
         android:textColor="@color/white"
@@ -42,7 +44,7 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:layout_below="@id/btn_connection_state"
-	    android:layout_marginTop="50dp"
+	    android:layout_marginTop="40dp"
 	    android:layout_centerHorizontal="true"
 	    android:text="1、确认蓝牙已经打开\n2、马上点击再次扫描"
 	    android:textSize="18sp"

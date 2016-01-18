@@ -24,6 +24,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -36,12 +37,13 @@ import com.view.circleimageview.CircleImageView;
 public class AddNewTrackerActivity extends Activity {
 	
 	private RelativeLayout titleBack;
+	private TextView titleCenture, titleRight;
 	private FrameLayout layout_add_image;
 	private EditText edt_ibeacon_name;
 	private Button btn_finish_pair;
 	private CircleImageView img_pic;
 	private View layout;
-	private String mPicName="";
+	private String mPicName="", device_mac;
 	private static final int PHOTO_RESOULT=0x000001;
 	private static final String IMAGE_UNSPECIFIED = "image/*";
 	private String mResultPicPath=Consts.IMG_PATH;//Environment.getExternalStorageDirectory()+ PopupWindows.PIC_PATH;
@@ -51,27 +53,23 @@ public class AddNewTrackerActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.activity_add_new_tracker);
-//		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar_add_tracker);
 		initView();
 		addListener();
-//		IbeaconApplication.getInstance().addActivity(this);
-//		getData();
+		getData();
 	}
 
 	private void getData() {
-		// TODO Auto-generated method stub
-//		device_mac = getIntent().getExtras().getString(Consts.DEVICE_MAC);
+		device_mac = getIntent().getExtras().getString(Consts.DEVICE_MAC);
 	}
 
 	private void addListener() {
-		/*titleBack.setOnClickListener(new OnClickListener() {
+		titleBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				AddNewTrackerActivity.this.finish();
 			}
-		});*/
+		});
 		
 		layout_add_image.setOnClickListener(new OnClickListener() {
 			@Override
@@ -108,7 +106,11 @@ public class AddNewTrackerActivity extends Activity {
 	}
 
 	private void initView() {
-//		titleBack = (RelativeLayout)findViewById(R.id.menu_back_construct);
+		titleBack = (RelativeLayout)findViewById(R.id.menu_back_construct);
+		titleRight = (TextView)findViewById(R.id.tv_title_bar_right_add);
+		titleRight.setVisibility(View.GONE);
+		titleCenture = (TextView)findViewById(R.id.tv_title_bar_title);
+		
 		layout = findViewById(R.id.add_new_tracker_layout);
 		layout_add_image =(FrameLayout)findViewById(R.id.laout_add_ibeacon_image);
 		img_pic = (CircleImageView) layout_add_image.findViewById(R.id.add_new_tracker_pic);

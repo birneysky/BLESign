@@ -100,7 +100,7 @@ public class BluetoothLeService extends Service {
 		@Override
 		public void onCharacteristicRead(BluetoothGatt gatt,
 				BluetoothGattCharacteristic characteristic, int status) {
-			System.out.println("onCharacteristicRead");
+			Log.d(TAG, "onCharacteristicRead");
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
 			}
@@ -110,27 +110,27 @@ public class BluetoothLeService extends Service {
 		public void onDescriptorWrite(BluetoothGatt gatt,
 				BluetoothGattDescriptor descriptor, int status) {
 
-			System.out.println("onDescriptorWriteonDescriptorWrite = " + status
+			Log.d(TAG, "onDescriptorWriteonDescriptorWrite = " + status
 					+ ", descriptor =" + descriptor.getUuid().toString());
 		}
 
 		@Override
 		public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+			Log.d(TAG, "--------onCharacteristicChanged-----");
 			broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
 			if (characteristic.getValue() != null) {
 
-				System.out.println(characteristic.getStringValue(0));
+				Log.i(TAG, characteristic.getStringValue(0));
 			}
-			System.out.println("--------onCharacteristicChanged-----");
 		}
 
 		@Override
 		public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-			System.out.println("rssi = " + rssi);
+			Log.i(TAG, "rssi = " + rssi);
 		}
 
 		public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-			System.out.println("--------write success----- status:" + status);
+			Log.d(TAG, "--------write success----- status:" + status);
 
 		};
 	};
@@ -147,24 +147,26 @@ public class BluetoothLeService extends Service {
 		// parsing is
 		// carried out as per profile specifications:
 		// http://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
-		Log.i(TAG, UUID_ZIJIN_SELECTED + ", " + characteristic.getUuid());
-		Log.i("info", "UUID = " + characteristic.getUuid());
-//		if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
-//			int flag = characteristic.getProperties();
-//			int format = -1;
-//			if ((flag & 0x01) != 0) {
-//				format = BluetoothGattCharacteristic.FORMAT_UINT16;
-//				Log.d(TAG, "Heart rate format UINT16.");
-//			} else {
-//				format = BluetoothGattCharacteristic.FORMAT_UINT8;
-//				Log.d(TAG, "Heart rate format UINT8.");
-//			}
-//			final int heartRate = characteristic.getIntValue(format, 1);
-//			System.out.println("Received heart rate: %d" + heartRate);
-//			Log.d(TAG, String.format("Received heart rate: %d", heartRate));
-//			intent.putExtra(EXTRA_DATA, String.valueOf(heartRate));
-//		} 
-//		else {
+		Log.i(TAG, "UUID = " + characteristic.getUuid());
+		if (SampleGattAttributes.SETTING_ALARM_CHARACTERISTIC.equals(characteristic.getUuid())) {
+			Log.i(TAG, "alarm characterisic");
+			/*int flag = characteristic.getProperties();
+			int format = -1;
+			if ((flag & 0x01) != 0) {
+				format = BluetoothGattCharacteristic.FORMAT_UINT16;
+				Log.d(TAG, "Heart rate format UINT16.");
+			} else {
+				format = BluetoothGattCharacteristic.FORMAT_UINT8;
+				Log.d(TAG, "Heart rate format UINT8.");
+			}
+			final int heartRate = characteristic.getIntValue(format, 1);
+			System.out.println("Received heart rate: %d" + heartRate);
+			Log.d(TAG, String.format("Received heart rate: %d", heartRate));
+			intent.putExtra(EXTRA_DATA, String.valueOf(heartRate));*/
+		} else if (SampleGattAttributes.SETTING_CAMERA_CHARACTERISTIC.equals(characteristic.getUuid())){
+			Log.i(TAG, "photo characterisic");
+		}
+		else {
 			// For all other profiles, writes the data formatted in HEX.
 			final byte[] data = characteristic.getValue();
 			if (data != null && data.length > 0) {
@@ -172,10 +174,10 @@ public class BluetoothLeService extends Service {
 				for (byte byteChar : data)
 					stringBuilder.append(String.format("%02X ", byteChar));
 
-				Log.i(TAG, "ppp:" + new String(data) + "\n" + stringBuilder.toString());
+				Log.i(TAG, "ppp:" + new String(data) +", "+ "\n" + stringBuilder.toString());
 				intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
 			}
-//		}
+		}
 		sendBroadcast(intent);
 	}
 

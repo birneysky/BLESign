@@ -194,6 +194,14 @@ public class Utils {
 	/**
 	 * 取消蓝牙配对
 	 */
+	public void unpairDevice(BluetoothDevice device) {
+		try {
+			Method m = device.getClass().getMethod("removeBond", (Class[]) null);
+			m.invoke(device, (Object[]) null);
+		} catch (Exception e) {
+			LogUtil.e(TAG, e.getMessage());
+		}
+	}
 	/** 
      * 与设备配对 参考源码：platform/packages/apps/Settings.git 
      * /Settings/src/com/android/settings/bluetooth/CachedBluetoothDevice.java 

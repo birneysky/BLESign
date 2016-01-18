@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/title_bar_height" 
+    android:orientation="horizontal"
+    android:id="@+id/title_bar"
+    android:background="@color/bg_title">
+    
+	<include layout="@layout/menu_back"/>
+	
+	
+	<TextView 
+	    android:id="@+id/tv_title_bar_title"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/app_name"
+	    android:layout_centerInParent="true"
+	    android:textSize="@dimen/title_bar_text_size"
+	    android:textColor="@color/black"/>
+
+	<TextView
+	    android:id="@+id/tv_title_bar_right_add"
+	    android:layout_width="wrap_content"
+	    android:layout_height="@dimen/title_bar_height"
+	    android:layout_marginEnd="@dimen/title_bar_badeg_margin_right"
+	    android:layout_alignParentEnd="true"
+	    android:layout_centerVertical="true"
+	    android:contentDescription="@null"
+	    android:text="@string/title_bar_right"
+	    android:textSize="@dimen/title_bar_rignt_text_size"
+	    android:textColor="@color/black"
+	    android:gravity="center_vertical|end"
+	    android:background="@color/transparent"/>
+	<ImageView 
+	    android:id="@+id/iv_black_line"
+	    android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:src="@drawable/black_line"
+    	android:scaleType="fitXY"
+    	android:layout_alignParentBottom="true"
+    	android:contentDescription="@null"/>
+
+</RelativeLayout>

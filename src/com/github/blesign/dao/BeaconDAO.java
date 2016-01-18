@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.github.blesign.dao.impl.BeaconDAOImpl;
 import com.github.blesign.model.Tracker;
+import com.zijin.ibeacon.db.SQLiteHelper;
 
 import android.content.Context;
 
@@ -44,5 +45,9 @@ public class BeaconDAO {
 	public int updateDistanceByMac(String device_addr, int progress) {
 		// TODO Auto-generated method stub
 		return beaconDAOImpl.updateDistanceByMac(device_addr, progress);
+	}
+	
+	public int deleteBeacon(int id) {
+		return beaconDAOImpl.deleteBeacon(id);
 	}
 }

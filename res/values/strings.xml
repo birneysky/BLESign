@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BleSign</string>
+    <string name="app_name">智能追踪器</string>
     <string name="hello_world">lv lanlan is a zhu!</string>
 
     <!-- AddBeaconActivity -->
@@ -11,6 +11,8 @@
     <string name="add_beacon_center_notice_text">将贴片\n放在这里</string>
 
     <!-- MainActivity -->
+    <string name="title_bar_back_text">返回</string>
+    <string name="title_bar_right">报警</string>
     <string name="disconnect_delete">移除连接并删除设备</string>
     <string name="open_camera">打开相机</string>
     <string name="tracker_connect">连接设备</string>

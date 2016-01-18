@@ -38,6 +38,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
@@ -65,12 +66,13 @@ import com.github.blesign.utils.Utils;
 public class MainActivity extends Activity {
 	
 	private final String TAG = this.getClass().getSimpleName();
-	
 	//UI
 	private GridView gridViewTrackers;
 	private GridViewAdapter adapter;
 	private ArrayList<Tracker> lists;
-	
+	//title bar
+	private RelativeLayout titleBack;
+	private TextView titleRight, titleCenture;
 	//Add Beacon
 	private BeaconDAO beaconDAO;
 	
@@ -79,6 +81,8 @@ public class MainActivity extends Activity {
 	private String path;
 	private String name;
 	private Uri uri;
+	//设置通知铃声
+	private String defaultUri, defaultName;
 	
 	//窗口配置
 	private View view; // 防丢器属性view
@@ -89,11 +93,8 @@ public class MainActivity extends Activity {
 	private TextView tvShowRingName, tvShowDistance;
 	private SeekBar mSeekBar;
 	
-	private  int mSlectedItem = -1; // 当前防丢器在adapter中的位置（size-1）
+	private int mSlectedItem = -1; // 当前防丢器在adapter中的位置（size-1）
 	private Tracker tracker; // 当前防丢器
-	
-	//设置通知铃声
-	private String defaultUri, defaultName;
 	
 	private boolean mConnected;
 	private BluetoothLeService mBluetoothLeService;
@@ -112,8 +113,8 @@ public class MainActivity extends Activity {
 			mBluetoothLeService = null;
 		}
 	};
+	
 	private Thread connectorThread;
-
 	protected List<BluetoothGattService> list;
 	protected BluetoothGattService alarmService, photoService;
 	protected BluetoothGattCharacteristic alarmCharacteristic, photoCharacteristic;
@@ -131,9 +132,10 @@ public class MainActivity extends Activity {
 			Log.i(TAG, "action = " + action);
 			if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
 				mConnected = true;
-				
+				// TODO 变更UI
 			} else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
 				mConnected = false;
+				// TODO 变更UI
 			} else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
 				// Show all the supported services and characteristics on the user interface.
 				// TODO 检查是否包含特定服务和特性，进行读写监听操作
@@ -142,7 +144,7 @@ public class MainActivity extends Activity {
 			} else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 				//
 				String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-				LogUtil.i(TAG, "data = "+  data);
+//				LogUtil.i(TAG, "data = "+  data);
 			}
 		}
 	};
@@ -152,6 +154,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+		
         try {
 			setData();
 			setupView();
@@ -181,7 +184,6 @@ public class MainActivity extends Activity {
     					mBluetoothLeService.readCharacteristic(photoCharacteristic);
 //    					mBluetoothLeService.wirteCharacteristic(alarmCharacteristic);
     				}
-    				
     				super.run();
     			}
     		};
@@ -245,15 +247,14 @@ public class MainActivity extends Activity {
 		Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
 		boolean bll = this.getApplicationContext().bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
 		if (bll) {
-			Log.i("info", "---------------");
+			LogUtil.i("info", "-------initService--------");
 		} else {
-			Log.i("info", "===============");
+			LogUtil.i("info", "========initService=======");
 		}
 		registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 	}
 
 	private void setData() {
-		// TODO Auto-generated method stub
 		beaconDAO = new BeaconDAO(getApplicationContext());
 		inflater = LayoutInflater.from(MainActivity.this);
 		defaultUri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION).toString();
@@ -261,7 +262,9 @@ public class MainActivity extends Activity {
 	}
 
 	private void setupView() {
-		// TODO Auto-generated method stub
+		titleBack = (RelativeLayout)findViewById(R.id.menu_back_construct);
+		titleBack.setVisibility(View.GONE);
+		titleRight = (TextView)findViewById(R.id.tv_title_bar_right_add);
 		gridViewTrackers = (GridView)findViewById(R.id.gridView_trackers);
 		lists = new ArrayList<Tracker>();
 		
@@ -277,7 +280,12 @@ public class MainActivity extends Activity {
 	}
 
 	private void addListener() {
-		// TODO Auto-generated method stub
+		titleRight.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO 判断是否脸接并让设备警报
+			}
+		});
 		gridViewTrackers.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View arg1, int position, long arg3) {
@@ -437,7 +445,25 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+				Tracker trackerdel = lists.get(mSlectedItem);
+				if (trackerdel != null) {
+					String mac = trackerdel.getDevice_addr();
+					if(mac != null){
+						int result = beaconDAO.deleteBeacon(trackerdel.getId());// 删除数据库
+						if(result == 0){
+							Utils.showMsg(getApplicationContext(), "删除失败，请重試！");
+							return;
+						}
+						Utils.ibeaconArr.remove(mac);
+						lists.remove(trackerdel);
+						adapter = new GridViewAdapter(getApplicationContext(), lists);
+						gridViewTrackers.setAdapter(adapter);
+						if (pop != null && pop.isShowing()) {
+							// 隐藏窗口，如果设置了点击窗口外小时即不需要此方式隐藏
+							pop.dismiss();
+						}
+					}
+				}
 			}
 		});
 		
@@ -445,10 +471,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-//				mBluetoothLeService.connect(tracker.getDevice_addr());
 				if (mBluetoothLeService != null) {
 					final boolean result = mBluetoothLeService.connect(tracker.getDevice_addr());
-					Log.d(TAG, "Connect request result=" + result);
+					Log.d(TAG, "Connect request result = " + result);
 				}
 			}
 		});

@@ -22,9 +22,8 @@ public class ConnectionStateActivity extends Activity {
 	private Button btnConnection;
 	private ImageView ivConnectionState;
 	private int state; // 202未发现；帮助查找/
-	private TextView tvTitle;
-	private ImageView ivTitleRight;
-	private RelativeLayout  menuBackConstruct;
+	private TextView titleRight, titleCenture;
+	private RelativeLayout titleBack;
 	private String device_mac;
 
 	@Override
@@ -47,17 +46,17 @@ public class ConnectionStateActivity extends Activity {
 	}
 
 	private void setupView() {
-		/*tvTitle = (TextView)findViewById(R.id.tv_title_bar_title);
-		ivTitleRight = (ImageView)findViewById(R.id.iv_title_bar_right_add);
-		ivTitleRight.setVisibility(View.GONE);
-		menuBackConstruct = (RelativeLayout)findViewById(R.id.menu_back_construct);*/
+		titleBack = (RelativeLayout)findViewById(R.id.menu_back_construct);
+		titleRight = (TextView)findViewById(R.id.tv_title_bar_right_add);
+		titleRight.setVisibility(View.GONE);
+		titleCenture = (TextView)findViewById(R.id.tv_title_bar_title);
 		tvConnectionState = (TextView)findViewById(R.id.tv_connection_state);
 		tvConnectionNotice = (TextView)findViewById(R.id.tv_connection_notice);
 		btnConnection = (Button)findViewById(R.id.btn_connection_state);
 		ivConnectionState = (ImageView)findViewById(R.id.iv_connection_state);
 		switch (state) {
 		case Consts.EXTRA_ADD_BEACON_OK:
-//			tvTitle.setText("添加新设备");
+			titleCenture.setText("添加新设备");
 			tvConnectionState.setText("连接已成功");
 			btnConnection.setText("设置物品信息");
 			ivConnectionState.setImageDrawable(getResources().getDrawable(R.drawable.connection_success));
@@ -66,7 +65,7 @@ public class ConnectionStateActivity extends Activity {
 			tvConnectionNotice.setVisibility(View.GONE);
 			break;
 		case Consts.EXTRA_ADD_BEACON_FAILED:
-//			tvTitle.setText("无法连接");
+			titleCenture.setText("无法连接");
 			tvConnectionState.setText("连接未成功");
 			btnConnection.setText("再次扫描");
 			btnConnection.setBackground(getResources().getDrawable(R.drawable.button_bg_yellow));
@@ -79,16 +78,15 @@ public class ConnectionStateActivity extends Activity {
 	}
 
 	private void addListener() {
-/*		menuBackConstruct.setOnClickListener(new OnClickListener() {
+		titleBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// TODO 点击返回按钮
 				Intent intent = new Intent();
-				intent.putExtra("tag", "add");
 				setResult(RESULT_CANCELED, intent);
 				ConnectionStateActivity.this.finish();
 			}
-		});*/
+		});
 		
 		btnConnection.setOnClickListener(new OnClickListener() {
 			@Override

@@ -42,7 +42,7 @@ public class AddBeaconActivity extends Activity {
 	private String major, minor, addAddress="";
 	private BluetoothAdapter mBluetoothAdapter;
 	private int devicecount = 0;
-	private TextView tvCenterNotice, tvShowNoticeBelow;
+	private TextView tvCenterNotice, tvShowNoticeBelow, titleRight, titleCenture;
 	private static final int REQUEST_ENABLE_BT = 1;
 	// 10秒后停止查找搜索.
 //    private static final long SCAN_PERIOD = 10000;
@@ -69,6 +69,11 @@ public class AddBeaconActivity extends Activity {
 		return true;
 	}
 	private void setupView() {
+		titleBack = (RelativeLayout)findViewById(R.id.menu_back_construct);
+		titleRight = (TextView)findViewById(R.id.tv_title_bar_right_add);
+		titleRight.setVisibility(View.GONE);
+		titleCenture = (TextView)findViewById(R.id.tv_title_bar_title);
+//		titleCenture.setText("添加");
 		ivRemoteView = (ImageView) findViewById(R.id.iv_add_beacon_small_point);
 		ivPointView = (ImageView) findViewById(R.id.iv_center_notice);
 		tvCenterNotice = (TextView)findViewById(R.id.tv_add_beacon_center_notice);
@@ -78,12 +83,12 @@ public class AddBeaconActivity extends Activity {
 	}
 
 	private void addListener() {
-		/*titleBack.setOnClickListener(new OnClickListener() {
+		titleBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				AddBeaconActivity.this.finish();
 			}
-		});*/
+		});
 		
 		ivPointView.setOnClickListener(new OnClickListener() {
 			@Override
@@ -120,7 +125,7 @@ public class AddBeaconActivity extends Activity {
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							Log.i(TAG, "device count = " + devicecount);
+							LogUtil.i(TAG, "device count = " + devicecount+", device mac = " + addAddress);
 							if(devicecount == 0){ 
 								// 未发现设备，重新扫描
 								Intent connectionFailed = new Intent(AddBeaconActivity.this, ConnectionStateActivity.class);

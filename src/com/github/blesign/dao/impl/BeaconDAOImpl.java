@@ -6,6 +6,7 @@ import com.github.blesign.dao.BeaconColumns;
 import com.github.blesign.dao.DBHelper;
 import com.github.blesign.model.Tracker;
 import com.github.blesign.utils.Consts;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ public class BeaconDAOImpl {
 	private String IDwhereClause = BeaconColumns.ID+"=?";
 //	private String MACwhereClause = BeaconColumns.MAC+"=?";
 	private static final String MAC_SELECTION = BeaconColumns.MAC + "=?";
+	private static final String ID_SELECTION = BeaconColumns.ID + "=?";
 	
 	public BeaconDAOImpl() {
 		// TODO Auto-generated constructor stub
@@ -115,5 +117,12 @@ public class BeaconDAOImpl {
 		ContentValues values = new ContentValues();
 		values.put(BeaconColumns.DISTANCE, progress);
 		return db.update(helper.BEACONS, values, MAC_SELECTION, mSingleArg);
+	}
+	
+	@SuppressWarnings("static-access")
+	public int deleteBeacon(int id) {
+		mSingleArg[0] = new String().valueOf(id);
+		int result = db.delete(helper.BEACONS, ID_SELECTION, mSingleArg);
+		return result;
 	}
 }
