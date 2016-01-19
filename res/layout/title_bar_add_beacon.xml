@@ -23,6 +23,8 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="@dimen/title_bar_height"
 	    android:layout_marginEnd="@dimen/title_bar_badeg_margin_right"
+	    android:paddingLeft="5dp"
+	    android:paddingRight="5dp"
 	    android:layout_alignParentEnd="true"
 	    android:layout_centerVertical="true"
 	    android:contentDescription="@null"

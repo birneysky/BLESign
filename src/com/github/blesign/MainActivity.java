@@ -61,6 +61,7 @@ import com.github.blesign.dao.BeaconDAO;
 import com.github.blesign.model.Tracker;
 import com.github.blesign.operation.BluetoothLeService;
 import com.github.blesign.operation.SampleGattAttributes;
+import com.github.blesign.utils.AlarmUtil;
 import com.github.blesign.utils.BitmapUtils;
 import com.github.blesign.utils.Consts;
 import com.github.blesign.utils.LogUtil;
@@ -101,7 +102,7 @@ public class MainActivity extends Activity {
 	
 	@SuppressLint("HandlerLeak") private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
-			LogUtil.i(TAG, "收到行动指令");
+			LogUtil.i(TAG, "收到行动指令: "+msg.what);
 			String address = (String) msg.obj;
 			switch (msg.what) {
 			case 1://已连接
@@ -153,16 +154,17 @@ public class MainActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			final String action = intent.getAction();
-			String address = intent.getStringExtra(Consts.DEVICE_MAC);
 			Log.i(TAG, "action = " + action);
 			if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
 				mConnected = true;
+				String address = intent.getStringExtra(Consts.DEVICE_MAC);
 				Message msg = new Message();
 				msg.what = 1;
 				msg.obj = address;
 				handler.sendMessage(msg);
 			} else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
 				mConnected = false;
+				String address = intent.getStringExtra(Consts.DEVICE_MAC);
 				Message msg = new Message();
 				msg.what = 0;
 				msg.obj = address;
@@ -174,6 +176,9 @@ public class MainActivity extends Activity {
 				connectorListener();
 			} else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 				//
+				String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
+				LogUtil.i(TAG, "data = "+  data);
+			} else if (BluetoothLeService.ACTION_RSSI_READ.equals(action)){
 				String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 //				LogUtil.i(TAG, "data = "+  data);
 			}
@@ -200,29 +205,42 @@ public class MainActivity extends Activity {
 
     protected void connectorListener() {
 		// TODO Auto-generated method stub
-    	if(connectorThread == null){
-    		connectorThread = new Thread(){
-    			@Override
-    			public void run() {
-    				// TODO 循环扫描iBeacon
-    				while(scanning){
-    					try {
-    						this.sleep(1000);
-    					} catch (InterruptedException e) {
-    						e.printStackTrace();
-    					}
-    					boolean rssi = mBluetoothLeService.getRssiVal();
-    					mBluetoothLeService.readCharacteristic(photoCharacteristic);
+		connectorThread = new Thread(){
+			@Override
+			public void run() {
+				// TODO 循环扫描iBeacon
+				while(scanning){
+					try {
+						this.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					boolean rssi = mBluetoothLeService.getRssiVal();
+					mBluetoothLeService.readCharacteristic(photoCharacteristic);
 //    					mBluetoothLeService.wirteCharacteristic(alarmCharacteristic);
-    				}
-    				super.run();
-    			}
-    		};
-    		connectorThread.start();
-    	}
+				}
+				super.run();
+			}
+		};
+		connectorThread.start();
     	Utils.connectorArr.add(tracker.getDevice_addr());
 	}
-
+    
+    private Thread alarmThread;
+    private boolean alarmTag;
+    protected void alarmListener(){
+		alarmThread = new Thread(){
+			@Override
+			public void run() {
+				// TODO 循环向设备发送警报命令
+				while(alarmTag){
+					mBluetoothLeService.wirteCharacteristic(alarmCharacteristic);
+				}
+				super.run();
+			}
+		};
+		alarmThread.start();
+    }
     
  // Demonstrates how to iterate through the supported GATT
  	// Services/Characteristics.
@@ -313,7 +331,14 @@ public class MainActivity extends Activity {
 		titleRight.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO 判断是否脸接并让设备警报
+				// TODO 判断是否连接并让设备警报
+				if(mConnected){//alarming
+					titleRight.setText("停止");
+					AlarmUtil.setAlarm(tracker.getRingUri(), getApplicationContext());
+				}else{
+					titleRight.setText("警报"); 
+					AlarmUtil.cancel();
+				}
 			}
 		});
 		gridViewTrackers.setOnItemClickListener(new OnItemClickListener() {
@@ -350,13 +375,11 @@ public class MainActivity extends Activity {
 	                pop.showAsDropDown(adapter.getView((int)arg3, arg1, parent));
 	                int[] location = new int[2];  
 	                arg1.getLocationOnScreen(location);  
-//	                popupWindow.showAtLocation(v, Gravity.NO_GRAVITY, location[0], location[1]-popupWindow.getHeight());
 	            }
 			}
 		});
 	}
 	
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
@@ -508,7 +531,7 @@ public class MainActivity extends Activity {
 		layoutDisconnectDelete.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				scanning = false;
 				Tracker trackerdel = lists.get(mSlectedItem);
 				if (trackerdel != null) {
 					String mac = trackerdel.getDevice_addr();
@@ -534,10 +557,10 @@ public class MainActivity extends Activity {
 		layoutConnection.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				if (mBluetoothLeService != null) {
 					final boolean result = mBluetoothLeService.connect(tracker.getDevice_addr());
-					Log.d(TAG, "Connect request result = " + result);
+					scanning = true;
+					LogUtil.d(TAG, "Connect request result = " + result);
 				}
 			}
 		});
@@ -545,7 +568,7 @@ public class MainActivity extends Activity {
 		layoutDisconnection.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				scanning = false;
 				mBluetoothLeService.disconnect();
 			}
 		});
@@ -642,6 +665,7 @@ public class MainActivity extends Activity {
 		intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
 		intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
 		intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+		intentFilter.addAction(BluetoothLeService.ACTION_RSSI_READ);
 		return intentFilter;
 	}
 

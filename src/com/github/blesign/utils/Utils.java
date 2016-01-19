@@ -69,7 +69,11 @@ public class Utils {
 	public static ArrayList<String> connectorArr = new ArrayList<String>();
 	
 	private static int txPower =-59;//设备距离一米的dBm值
-	
+	/**
+	 * 根据rssi,计算距离
+	 * @param rssi
+	 * @return
+	 */
 	public static double calculateDistance(double rssi) {
         if (rssi == 0) {
             return -1.0; // if we cannot determine accuracy, return -1.

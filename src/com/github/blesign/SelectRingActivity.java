@@ -18,6 +18,8 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -29,6 +31,10 @@ public class SelectRingActivity extends Activity {
 	SharedPreferences sp;
 	SharedPreferences.Editor spe;
 	String ringMac;
+	
+	private RelativeLayout titleBack;
+	private TextView titleCenture, titleRight;
+	private boolean select;//记录是否选择铃音
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,21 +51,54 @@ public class SelectRingActivity extends Activity {
 		listView.setAdapter(ringAdapter);
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		listView.setOnItemClickListener(mOnItemClickListener);
-
+		
 		/*初始化返回按钮和保存按钮*/
 		Button backBtn = (Button) findViewById(R.id.back_btn);
 		sureBtn = (Button) findViewById(R.id.sure_btn);
 		backBtn.setOnClickListener(mOnClickListener);
 		sureBtn.setOnClickListener(mOnClickListener);
+		setupView();
+		addListener();
+	}
+
+	private void setupView() {
+		titleBack = (RelativeLayout)findViewById(R.id.menu_back_construct);
+		titleRight = (TextView)findViewById(R.id.tv_title_bar_right_add);
+		titleRight.setText("保存");
+		titleCenture = (TextView)findViewById(R.id.tv_title_bar_title);
+		titleCenture.setText("警报提示音");
+		
+	}
+
+	private void addListener() {
+		titleBack.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		
+		titleCenture.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent();
+				if(select){
+					spe.putInt(ringMac, listView.getCheckedItemPosition()).commit();
+					intent.putExtra(Consts.EXTRA_RING_NAME, ringName);
+					intent.putExtra(Consts.EXTRA_RING_URI, ringUri);
+					setResult(RESULT_OK, intent);
+				}else{
+					setResult(RESULT_CANCELED);
+				}
+				finish();
+			}
+		});
 	}
 
 	/*listView的按钮点击事件*/
 	private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
-
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			ViewHolder mHolder = new ViewHolder(parent);
 			/*设置Imageview不可被点击*/
 			mHolder.iv.setClickable(false);
@@ -91,7 +130,7 @@ public class SelectRingActivity extends Activity {
 				ringUri = uri.toString();
 				ringName = "跟随系统";
 			}
-
+			select = true;
 		}
 
 	};
@@ -111,7 +150,6 @@ public class SelectRingActivity extends Activity {
 			/*保存按钮则保存SharedPreferences中的数据*/
 			case R.id.sure_btn:
 				spe.putInt(ringMac, listView.getCheckedItemPosition()).commit();
-//				Toast.makeText(SelectRingActivity.this, "提示音保存成功", Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent().putExtra(Consts.EXTRA_RING_NAME, ringName);
 				intent.putExtra(Consts.EXTRA_RING_URI, ringUri);
 				setResult(RESULT_OK, intent);

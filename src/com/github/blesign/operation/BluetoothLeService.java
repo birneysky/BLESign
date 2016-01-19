@@ -61,6 +61,7 @@ public class BluetoothLeService extends Service {
 	public final static String ACTION_GATT_SERVICES_DISCOVERED = "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED";
 	public final static String ACTION_DATA_AVAILABLE = "com.example.bluetooth.le.ACTION_DATA_AVAILABLE";
 	public final static String EXTRA_DATA = "com.example.bluetooth.le.EXTRA_DATA";
+	public final static String ACTION_RSSI_READ = "com.myble.sign.ACTION_RSSI_READ";
 
 //	public final static UUID UUID_HEART_RATE_MEASUREMENT = UUID
 //			.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
@@ -102,8 +103,7 @@ public class BluetoothLeService extends Service {
 		}
 
 		@Override
-		public void onCharacteristicRead(BluetoothGatt gatt,
-				BluetoothGattCharacteristic characteristic, int status) {
+		public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 			Log.d(TAG, "onCharacteristicRead");
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic, gatt.getDevice().getAddress());
@@ -111,11 +111,9 @@ public class BluetoothLeService extends Service {
 		}
 
 		@Override
-		public void onDescriptorWrite(BluetoothGatt gatt,
-				BluetoothGattDescriptor descriptor, int status) {
+		public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
 
-			Log.d(TAG, "onDescriptorWriteonDescriptorWrite = " + status
-					+ ", descriptor =" + descriptor.getUuid().toString());
+			Log.d(TAG, "onDescriptorWriteonDescriptorWrite = " + status + ", descriptor =" + descriptor.getUuid().toString());
 		}
 
 		@Override
@@ -131,6 +129,7 @@ public class BluetoothLeService extends Service {
 		@Override
 		public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
 			Log.i(TAG, "rssi = " + rssi);
+			broadcastUpdate(ACTION_RSSI_READ, rssi, gatt.getDevice().getAddress());
 		}
 
 		public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
@@ -145,6 +144,11 @@ public class BluetoothLeService extends Service {
 		sendBroadcast(intent);
 	}
 
+	private void broadcastUpdate(final String action, int rssi, String address){
+		final Intent intent = new Intent(action);
+		intent.putExtra(Consts.DEVICE_MAC, address);
+		intent.putExtra(EXTRA_DATA, rssi);
+	}
 	private void broadcastUpdate(final String action, final BluetoothGattCharacteristic characteristic, String address) {
 		final Intent intent = new Intent(action);
 		intent.putExtra(Consts.DEVICE_MAC, address);
@@ -171,7 +175,7 @@ public class BluetoothLeService extends Service {
 		} else if (SampleGattAttributes.SETTING_CAMERA_CHARACTERISTIC.equals(characteristic.getUuid())){
 			Log.i(TAG, "photo characterisic");
 		}
-		else {
+//		else {
 			// For all other profiles, writes the data formatted in HEX.
 			final byte[] data = characteristic.getValue();
 			if (data != null && data.length > 0) {
@@ -180,9 +184,9 @@ public class BluetoothLeService extends Service {
 					stringBuilder.append(String.format("%02X ", byteChar));
 
 				Log.i(TAG, "ppp: data = " + new String(data) +", "+ "\n stringData = " + stringBuilder.toString());
-				intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
+				intent.putExtra(EXTRA_DATA, stringBuilder.toString());
 			}
-		}
+//		}
 		sendBroadcast(intent);
 	}
 
