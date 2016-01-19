@@ -41,8 +41,6 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import com.github.blesign.MainActivity;
-
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -206,7 +204,7 @@ public class Utils {
      * 与设备配对 参考源码：platform/packages/apps/Settings.git 
      * /Settings/src/com/android/settings/bluetooth/CachedBluetoothDevice.java 
      */  
-    static public boolean createBond(Class btClass, BluetoothDevice btDevice)  
+    static public boolean createBond(Class<? extends BluetoothDevice> btClass, BluetoothDevice btDevice)  
     throws Exception  
     {  
         Method createBondMethod = btClass.getMethod("createBond");  
@@ -218,7 +216,7 @@ public class Utils {
      * 与设备解除配对 参考源码：platform/packages/apps/Settings.git 
      * /Settings/src/com/android/settings/bluetooth/CachedBluetoothDevice.java 
      */  
-    static public boolean removeBond(Class btClass, BluetoothDevice btDevice)  
+    static public boolean removeBond(Class<?> btClass, BluetoothDevice btDevice)  
             throws Exception  
     {  
         Method removeBondMethod = btClass.getMethod("removeBond");  
@@ -226,7 +224,7 @@ public class Utils {
         return returnValue.booleanValue();  
     }  
    
-    static public boolean setPin(Class btClass, BluetoothDevice btDevice,  
+    static public boolean setPin(Class<? extends BluetoothDevice> btClass, BluetoothDevice btDevice,  
             String str) throws Exception  
     {  
         try  
@@ -256,7 +254,7 @@ public class Utils {
     }  
    
     // 取消用户输入  
-    static public boolean cancelPairingUserInput(Class btClass,  
+    static public boolean cancelPairingUserInput(Class<?> btClass,  
             BluetoothDevice device)  
    
     throws Exception  
@@ -267,7 +265,7 @@ public class Utils {
     }  
    
     // 取消配对  
-    static public boolean cancelBondProcess(Class btClass,  
+    static public boolean cancelBondProcess(Class<?> btClass,  
             BluetoothDevice device)  
    
     throws Exception  
@@ -281,7 +279,7 @@ public class Utils {
      * 反射：获取所有这个类的方法
      * @param clsShow 
      */  
-    static public void printAllInform(Class clsShow)  
+    static public void printAllInform(Class<?> clsShow)  
     {  
         try  
         {  
@@ -416,7 +414,8 @@ public class Utils {
     /**  解压缩（压缩文件中包含多个文件）可代替上面的方法使用。
      * ZipInputStream类
      * */
-    public static void upZipMultiFile(String zippath ,String outzippath){
+    @SuppressWarnings("resource")
+	public static void upZipMultiFile(String zippath ,String outzippath){
     	try {
     		File file = new File(zippath);
     		File outFile = null;

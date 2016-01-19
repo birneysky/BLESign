@@ -26,8 +26,6 @@ public class GridViewAdapter extends BaseAdapter {
 	private LayoutInflater inflater;
 	private ArrayList<Tracker> lists;
 	private Context context;
-	private int clickTemp = -1;
-	private int screenWidth;
 	
 	private void setMusics(ArrayList<Tracker> lists) {
 		if (lists != null) {
@@ -37,15 +35,13 @@ public class GridViewAdapter extends BaseAdapter {
 		}
 	}
 	
-	public void setSeclection(int position) {
-		clickTemp = position;
-		}
+	/*public void setSeclection(int position) {
+	}*/
 	
 	public GridViewAdapter(Context context, ArrayList<Tracker> lists) {
 		this.context = context;
 		this.inflater = LayoutInflater.from(context);
 		this.setMusics(lists);
-		this.screenWidth = ScreenUtils.getScreenWidth(context);
 	}
 
 	@Override
@@ -68,7 +64,6 @@ public class GridViewAdapter extends BaseAdapter {
 		ViewHolder holder = null;
 		if(convertView == null) {
 			convertView = inflater.inflate(R.layout.gridview_item, null);
-//			convertView.setLayoutParams(new LayoutParams(parent.getWidth()/3, parent.getWidth()/3));
 			holder = new ViewHolder();
 			holder.civTrackerPhoto = (CircleImageView) convertView.findViewById(R.id.circleImageView_tracker_photo);
 			holder.civStatebg =(CircleImageView) convertView.findViewById(R.id.circleImageView_tracker_state_bg);
@@ -106,13 +101,14 @@ public class GridViewAdapter extends BaseAdapter {
 			} else if (trackerState == Consts.TRACKER_STATE_DISCONNECT) {
 				holder.tvTrackerState.setVisibility(View.GONE);
 				holder.civStatebg.setImageDrawable(context.getResources().getDrawable(R.drawable.unselected_item_bg));
-			} else if (trackerState == Consts.TRACKER_STATE_ICON_CHANGE_RED){//只需更改指示颜色为红色
+			} 
+			/*else if (trackerState == Consts.TRACKER_STATE_ICON_CHANGE_RED){//只需更改指示颜色为红色
 				holder.civStatebg.setImageDrawable(context.getResources().getDrawable(R.drawable.lost_item_bg));
 				holder.tvTrackerState.setVisibility(View.GONE);
 			} else if (trackerState == Consts.TRACKER_STATE_ICON_CHANGE_BACK){
 				holder.civStatebg.setImageDrawable(context.getResources().getDrawable(R.drawable.selected_item_bg));
 				holder.tvTrackerState.setVisibility(View.GONE);
-			}
+			}*/
 			holder.ivNoTrackerItemBg.setVisibility(View.GONE);
 		} else {
 			holder.ivNoTrackerItemBg.setVisibility(View.INVISIBLE);

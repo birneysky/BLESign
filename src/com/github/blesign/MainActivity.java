@@ -101,13 +101,17 @@ public class MainActivity extends Activity {
 	
 	@SuppressLint("HandlerLeak") private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
+			LogUtil.i(TAG, "收到行动指令");
 			String address = (String) msg.obj;
 			switch (msg.what) {
 			case 1://已连接
-				updateConnectionState(address, 1);
+				updateConnectionState(address, Consts.TRACKER_STATE_CONNECT);
 				break;
 			case 0://已断开
-				updateConnectionState(address, 0);
+				updateConnectionState(address, Consts.TRACKER_STATE_DISCONNECT);
+				break;
+			case 3://信号丢失
+				updateConnectionState(address, Consts.TRACKER_STATE_ALARM);
 				break;
 			default:
 				break;
@@ -123,7 +127,8 @@ public class MainActivity extends Activity {
 		public void onServiceConnected(ComponentName componentName, IBinder service) {
 			mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
 			if (!mBluetoothLeService.initialize()) {
-				Log.e(TAG, "Unable to initialize Bluetooth");
+				LogUtil.e(TAG, "Unable to initialize Bluetooth");
+				finish();
 			}
 		}
 
@@ -236,7 +241,7 @@ public class MainActivity extends Activity {
  				for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
  	 				String alarm = gattCharacteristic.getUuid().toString();
  	 				if(SampleGattAttributes.SETTING_ALARM_CHARACTERISTIC.equals(alarm)){
- 	 					LogUtil.i(TAG, "alarm");
+ 	 					LogUtil.i(TAG, "alarm characteristic!");
  	 					alarmCharacteristic = gattCharacteristic;
  	 				}
  	 			}
@@ -245,7 +250,7 @@ public class MainActivity extends Activity {
  				for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
  	 				String photo = gattCharacteristic.getUuid().toString();
  	 				if(SampleGattAttributes.SETTING_CAMERA_CHARACTERISTIC.equals(photo)){
- 	 					LogUtil.i(TAG, "photo");
+ 	 					LogUtil.i(TAG, "photo characteristic!");
  	 					photoCharacteristic = gattCharacteristic;
  	 				}
  	 			}
@@ -410,7 +415,7 @@ public class MainActivity extends Activity {
 	 * @param address 某一设备地址，用来标识设备
 	 * @param i 设备状态，0：未连接，1：已连接，3：信号消失
 	 */
-    protected void updateConnectionState(String address, int i) {
+    protected void updateConnectionState(String address, int status) {
 		// TODO Auto-generated method stub
     	Tracker changedTracker = null;
 		for(Tracker tracker : lists){
@@ -419,6 +424,24 @@ public class MainActivity extends Activity {
 				break;
 			}
 		}
+		if(Consts.TRACKER_STATE_CONNECT == status){//连接
+			if(changedTracker==null)return;
+			changedTracker.setState(Consts.TRACKER_STATE_CONNECT);
+			adapter.notifyDataSetChanged();
+		}else if(Consts.TRACKER_STATE_DISCONNECT == status){//断开
+			if(changedTracker==null)return;
+			changedTracker.setState(Consts.TRACKER_STATE_DISCONNECT);//临时更改
+			adapter.notifyDataSetChanged();
+		}
+		/*else if(Consts.TRACKER_STATE_ALARM == status){//丢失信号
+			if(changedTracker==null)return;
+			adapter.updateIconState(address, status);
+		}
+		else if(Consts.TRACKER_STATE_CONNECT == status){//红色点点变回蓝色点点
+			if(changedTracker==null)return;
+			adapter.updateIconState(address, status);
+		}*/
+		
 	}
 
 	private void updateCurrentTracker(String ringName, String u) {
