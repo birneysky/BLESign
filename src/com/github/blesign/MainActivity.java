@@ -5,20 +5,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -39,11 +37,8 @@ import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
@@ -177,25 +172,24 @@ public class MainActivity extends Activity {
 			} else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 				//
 				String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-				LogUtil.i(TAG, "data = "+  data);
+//				LogUtil.i(TAG, "data = "+  data);
 			} else if (BluetoothLeService.ACTION_RSSI_READ.equals(action)){
 				String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 //				LogUtil.i(TAG, "data = "+  data);
 			}
 		}
 	};
-	
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-		
         try {
 			setData();
 			setupView();
 			addListener();
 			initService();
+			initialize();
 		} catch (Exception e) {
 			LogUtil.e(TAG, e.toString());
 		}
@@ -217,7 +211,6 @@ public class MainActivity extends Activity {
 					}
 					boolean rssi = mBluetoothLeService.getRssiVal();
 					mBluetoothLeService.readCharacteristic(photoCharacteristic);
-//    					mBluetoothLeService.wirteCharacteristic(alarmCharacteristic);
 				}
 				super.run();
 			}
@@ -228,13 +221,36 @@ public class MainActivity extends Activity {
     
     private Thread alarmThread;
     private boolean alarmTag;
-    protected void alarmListener(){
+	private AlarmUtil alarmUtil;//信号消失，手机警报
+	private BluetoothGattService alarmBluetoothGattService;
+    protected void alarmListener(final boolean tag){
 		alarmThread = new Thread(){
 			@Override
 			public void run() {
 				// TODO 循环向设备发送警报命令
 				while(alarmTag){
-					mBluetoothLeService.wirteCharacteristic(alarmCharacteristic);
+//					alarmBluetoothGattService
+//					mBluetoothLeService.setCharacteristicNotification(alarmCharacteristic, true); //你把这句 加在搜索到 服务的时候
+					if(tag){
+						LogUtil.i(TAG, "11,");
+						byte[] data = new byte[1];
+						data[0] = 0 * 02;//01,02
+						alarmCharacteristic.setValue(data);
+//						alarmCharacteristic.addDescriptor(descriptor)
+						mBluetoothLeService.wirteCharacteristic(alarmCharacteristic);
+					}else{
+						LogUtil.i(TAG, "12,");
+						byte[] data = new byte[1];
+						data[0] = 0 * 00;//01,02
+						alarmCharacteristic.setValue(data);
+						mBluetoothLeService.wirteCharacteristic(alarmCharacteristic);
+						alarmTag = false;
+					}
+					try {
+						sleep(400);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 				super.run();
 			}
@@ -242,6 +258,7 @@ public class MainActivity extends Activity {
 		alarmThread.start();
     }
     
+   
  // Demonstrates how to iterate through the supported GATT
  	// Services/Characteristics.
  	// In this sample, we populate the data structure that is bound to the
@@ -255,12 +272,14 @@ public class MainActivity extends Activity {
  		for (BluetoothGattService gattService : gattServices) {
  			uuid = gattService.getUuid().toString();
  			if(SampleGattAttributes.SETTING_ALARM_SERVICE.equals(uuid)){
+ 				alarmBluetoothGattService = gattService;
  				List<BluetoothGattCharacteristic> gattCharacteristics = gattService.getCharacteristics();
  				for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
  	 				String alarm = gattCharacteristic.getUuid().toString();
  	 				if(SampleGattAttributes.SETTING_ALARM_CHARACTERISTIC.equals(alarm)){
  	 					LogUtil.i(TAG, "alarm characteristic!");
  	 					alarmCharacteristic = gattCharacteristic;
+// 	 					descriptor = gattCharacteristic.getDescriptor(UUID.fromString(alarm));
  	 				}
  	 			}
  			}else if(SampleGattAttributes.SETTING_CAMERA_SERVICE.equals(uuid)){
@@ -288,9 +307,11 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		alarmUtil.release();
 		unregisterReceiver(mGattUpdateReceiver);
 		mBluetoothLeService = null;
 	}
+	
 	private void initService() {
 		Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
 		boolean bll = this.getApplicationContext().bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
@@ -307,6 +328,7 @@ public class MainActivity extends Activity {
 		inflater = LayoutInflater.from(MainActivity.this);
 		defaultUri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION).toString();
 		defaultName = "跟随系统";
+		alarmUtil = new AlarmUtil(getApplicationContext());
 	}
 
 	private void setupView() {
@@ -331,13 +353,21 @@ public class MainActivity extends Activity {
 		titleRight.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO 判断是否连接并让设备警报
+				LogUtil.i(TAG, "titleRight clicked!");
+				// TODO 判断是否连接并让设备警报,写入命令警报
 				if(mConnected){//alarming
-					titleRight.setText("停止");
-					AlarmUtil.setAlarm(tracker.getRingUri(), getApplicationContext());
-				}else{
-					titleRight.setText("警报"); 
-					AlarmUtil.cancel();
+					LogUtil.i(TAG, "1,");
+					if(alarmTag){ //停止警报
+						LogUtil.i(TAG, "2,");
+						titleRight.setText("警报");
+						alarmListener(false);
+						
+//						alarmUtil.setAlarm(tracker.getRingUri());
+					}else{ //写入警报命令
+						titleRight.setText("停止");
+						alarmTag = true;
+						alarmListener(true);
+					}
 				}
 			}
 		});
@@ -383,6 +413,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
+		if (requestCode == Consts.REQUEST_ENABLE_BT && resultCode == RESULT_CANCELED) {
+			Utils.showMsg(getApplicationContext(), "请开启蓝牙");
+			return;
+		}
 		if(requestCode == AddBeaconActivity.REQUEST_ADD_IBEACON){
 			if(resultCode == RESULT_OK){
 				Tracker tracker = new Tracker();
@@ -667,6 +701,23 @@ public class MainActivity extends Activity {
 		intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
 		intentFilter.addAction(BluetoothLeService.ACTION_RSSI_READ);
 		return intentFilter;
+	}
+	/**
+	 * Initializes a reference to the local Bluetooth adapter.
+	 */
+	private void initialize() {
+		IbeaconApplication application = (IbeaconApplication) getApplication();
+		BluetoothAdapter mBluetoothAdapter = null;
+		if(application.isSupport){
+			final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+			mBluetoothAdapter = bluetoothManager.getAdapter();
+		}else{
+			return;
+		}
+		if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, Consts.REQUEST_ENABLE_BT);
+        }
 	}
 
 }

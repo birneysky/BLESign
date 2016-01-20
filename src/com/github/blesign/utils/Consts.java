@@ -18,6 +18,7 @@ public class Consts {
 	
 	//add ibeacon
 	public static final int DEFAULT_DISTANCE = 3;
+	public static final int REQUEST_ENABLE_BT = 111;
 	
 	public static final int TRACKER_STATE_DISCONNECT = 0; // 未连接
 	public static final int TRACKER_STATE_CONNECT = 1;//已连接

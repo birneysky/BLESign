@@ -43,7 +43,7 @@ public class AddBeaconActivity extends Activity {
 	private BluetoothAdapter mBluetoothAdapter;
 	private int devicecount = 0;
 	private TextView tvCenterNotice, tvShowNoticeBelow, titleRight, titleCenture;
-	private static final int REQUEST_ENABLE_BT = 1;
+	
 	// 10秒后停止查找搜索.
 //    private static final long SCAN_PERIOD = 10000;
 	
@@ -96,7 +96,7 @@ public class AddBeaconActivity extends Activity {
 				// 为了确保设备上蓝牙能使用, 如果当前蓝牙设备没启用,弹出对话框向用户要求授予权限来启用
 		        if (!mBluetoothAdapter.isEnabled()) {
 	                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-	                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+	                startActivityForResult(enableBtIntent, Consts.REQUEST_ENABLE_BT);
 		        }else{
 		        	if(isscaning)return;
 		        	setAnimation();
@@ -190,7 +190,7 @@ public class AddBeaconActivity extends Activity {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
+		if (requestCode == Consts.REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
 //            finish();
 			Utils.showMsg(getApplicationContext(), "开启蓝牙才能添加设备");
             return;
