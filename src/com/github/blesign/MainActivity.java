@@ -220,31 +220,27 @@ public class MainActivity extends Activity {
 	}
     
     private Thread alarmThread;
-    private boolean alarmTag;
+    private boolean alarmTagOpen, alarmTagClose;
 	private AlarmUtil alarmUtil;//信号消失，手机警报
-	private BluetoothGattService alarmBluetoothGattService;
-    protected void alarmListener(final boolean tag){
+
+	protected void alarmListener(){
 		alarmThread = new Thread(){
 			@Override
 			public void run() {
 				// TODO 循环向设备发送警报命令
-				while(alarmTag){
-//					alarmBluetoothGattService
-//					mBluetoothLeService.setCharacteristicNotification(alarmCharacteristic, true); //你把这句 加在搜索到 服务的时候
-					if(tag){
-						LogUtil.i(TAG, "11,");
+				while(mConnected){
+					if(alarmTagOpen){
+						LogUtil.i(TAG, "11,open!");
 						byte[] data = new byte[1];
 						data[0] = 0 * 02;//01,02
 						alarmCharacteristic.setValue(data);
-//						alarmCharacteristic.addDescriptor(descriptor)
 						mBluetoothLeService.wirteCharacteristic(alarmCharacteristic);
-					}else{
-						LogUtil.i(TAG, "12,");
+					}else if(alarmTagClose){
+						LogUtil.i(TAG, "12,close!");
 						byte[] data = new byte[1];
 						data[0] = 0 * 00;//01,02
 						alarmCharacteristic.setValue(data);
 						mBluetoothLeService.wirteCharacteristic(alarmCharacteristic);
-						alarmTag = false;
 					}
 					try {
 						sleep(400);
@@ -272,14 +268,12 @@ public class MainActivity extends Activity {
  		for (BluetoothGattService gattService : gattServices) {
  			uuid = gattService.getUuid().toString();
  			if(SampleGattAttributes.SETTING_ALARM_SERVICE.equals(uuid)){
- 				alarmBluetoothGattService = gattService;
  				List<BluetoothGattCharacteristic> gattCharacteristics = gattService.getCharacteristics();
  				for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
  	 				String alarm = gattCharacteristic.getUuid().toString();
  	 				if(SampleGattAttributes.SETTING_ALARM_CHARACTERISTIC.equals(alarm)){
  	 					LogUtil.i(TAG, "alarm characteristic!");
  	 					alarmCharacteristic = gattCharacteristic;
-// 	 					descriptor = gattCharacteristic.getDescriptor(UUID.fromString(alarm));
  	 				}
  	 			}
  			}else if(SampleGattAttributes.SETTING_CAMERA_SERVICE.equals(uuid)){
@@ -357,17 +351,17 @@ public class MainActivity extends Activity {
 				// TODO 判断是否连接并让设备警报,写入命令警报
 				if(mConnected){//alarming
 					LogUtil.i(TAG, "1,");
-					if(alarmTag){ //停止警报
-						LogUtil.i(TAG, "2,");
+					if(alarmTagOpen && !alarmTagClose){ //停止警报
 						titleRight.setText("警报");
-						alarmListener(false);
-						
-//						alarmUtil.setAlarm(tracker.getRingUri());
-					}else{ //写入警报命令
+						alarmTagClose = true;
+						alarmTagOpen = false;
+					}else if(!alarmTagOpen && alarmTagClose){ //写入警报命令
 						titleRight.setText("停止");
-						alarmTag = true;
-						alarmListener(true);
+						alarmTagOpen = true;
+						alarmTagClose = false;
 					}
+				}else{
+					Utils.showMsg(getApplicationContext(), "请连接设备");
 				}
 			}
 		});

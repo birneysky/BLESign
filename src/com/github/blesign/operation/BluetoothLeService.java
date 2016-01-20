@@ -310,19 +310,7 @@ public class BluetoothLeService extends Service {
 	}
 
 
-	 private void writeAlarm(){
-	    	BluetoothGattService myBluetoothGattService = null;
-	        myBluetoothGattService = mBluetoothGatt.getService(UUID.fromString(SampleGattAttributes.SETTING_ALARM_SERVICE));
-	        BluetoothGattCharacteristic mBluetoothGattCharacteristic = null;
-	        mBluetoothGattCharacteristic = myBluetoothGattService.getCharacteristic(UUID.fromString(SampleGattAttributes.SETTING_ALARM_CHARACTERISTIC));
-	        byte[] data = {0x02};
-	        mBluetoothGattCharacteristic.setValue(data);
-	        mBluetoothGatt.writeCharacteristic(mBluetoothGattCharacteristic);
-    }
-	    
-	
 	public void wirteCharacteristic(BluetoothGattCharacteristic characteristic) {
-
 		if (mBluetoothAdapter == null || mBluetoothGatt == null) {
 			Log.w(TAG, "BluetoothAdapter not initialized");
 			return;
@@ -339,8 +327,8 @@ public class BluetoothLeService extends Service {
 	}
 
 	/**
-	 * Request a read on a given {@code BluetoothGattCharacteristic}. The read
-	 * result is reported asynchronously through the
+	 * Request a read on a given {@code BluetoothGattCharacteristic}. 
+	 * The read result is reported asynchronously through the
 	 * {@code BluetoothGattCallback#onCharacteristicRead(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
 	 * callback.
 	 * 
@@ -352,7 +340,11 @@ public class BluetoothLeService extends Service {
 			Log.w(TAG, "BluetoothAdapter not initialized");
 			return;
 		}
-		mBluetoothGatt.readCharacteristic(characteristic);
+		BluetoothGattService myBluetoothGattService = null;
+        myBluetoothGattService = mBluetoothGatt.getService(UUID.fromString(SampleGattAttributes.SETTING_CAMERA_SERVICE));
+        BluetoothGattCharacteristic mBluetoothGattCharacteristic = null;
+        mBluetoothGattCharacteristic = myBluetoothGattService.getCharacteristic(UUID.fromString(SampleGattAttributes.SETTING_CAMERA_CHARACTERISTIC));
+		mBluetoothGatt.readCharacteristic(mBluetoothGattCharacteristic);
 	}
 
 	/**
@@ -376,8 +368,8 @@ public class BluetoothLeService extends Service {
 			mBluetoothGatt.writeDescriptor(descriptor);
 		}
 		/*
-		 * // This is specific to Heart Rate Measurement. if
-		 * (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
+		 * // This is specific to Heart Rate Measurement. 
+		 * if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
 		 * System.out.println("characteristic.getUuid() == "+characteristic.getUuid()+", "); 
 		 * BluetoothGattDescriptor descriptor = characteristic.getDescriptor
 		 * (UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
